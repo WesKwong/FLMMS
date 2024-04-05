@@ -1,19 +1,20 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
+from nnets.BaseNetGetter import BaseNetGetter
 
-def get_net(dataset_name):
-    if dataset_name == "MNIST":
-        return LeNet5(10, 1)
-    elif dataset_name == "FashionMNIST":
-        return LeNet5(10, 1)
-    elif dataset_name == "CIFAR10":
-        return LeNet5(10, 3)
-    else:
-        raise ValueError(f"Invalid dataset getting LeNet5: {dataset_name}")
+
+class LeNet5NetGetter(BaseNetGetter):
+
+    def __init__(self, hp):
+        if hp["dataset"] == "CIFAR10":
+            return LeNet5(10, 3)
+        else:
+            raise ValueError(f"Invalid dataset getting LeNet5: {hp["dataset"]}")
 
 
 class LeNet5(nn.Module):
+
     def __init__(self, n_classes, in_channels):
         """
         n_classes: number of classes in the dataset
@@ -24,7 +25,7 @@ class LeNet5(nn.Module):
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.pool = nn.MaxPool2d(2)
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(16*5*5, 120)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, n_classes)
 

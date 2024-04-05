@@ -8,7 +8,6 @@ import torch
 import torch.distributed as dist
 from concurrent.futures import ThreadPoolExecutor
 
-from configs.MainConfig import config
 
 def init_communication_group(verbose=True):
     logger.info("Initializing Communication Group...")
@@ -56,3 +55,8 @@ def gather(srcs, tag=0):
         for src in srcs:
             data.append(executor.submit(recv, src, tag).result())
     return data
+
+def scatter(data, dsts, tag=0):
+    with ThreadPoolExecutor(max_workers=len(dsts)) as executor:
+        for i, dst in enumerate(dsts):
+            executor.submit(send, data[i], dst, tag)

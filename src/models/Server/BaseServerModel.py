@@ -31,7 +31,7 @@ class BaseServerModel(BaseModel):
                 target=self.dW,
                 sources=[param["dW"] for param in clients_params],
                 weights=torch.stack([
-                    self.client_sizes[param["id"]] for param in clients_params
+                    self.clients_weight[param["id"]] for param in clients_params
                 ]))
         else:
             raise ValueError(f"Invalid aggregation method: {aggregation}")

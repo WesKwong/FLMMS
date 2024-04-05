@@ -20,5 +20,5 @@ cd SetupUtils && ./CreateDockerNet.bash
 #### 3. Launch the Simulator
 
 ```bash
-python launch.py
+cd src && python launch.py
 ```

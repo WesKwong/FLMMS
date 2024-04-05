@@ -44,6 +44,14 @@ class BaseDataset(object):
                             shuffle=True)
         return loader
 
+    def get_train_loader(self, batch_size):
+        data = self.train_set.data
+        labels = self.train_set.targets
+        loader = DataLoader(CustomerDataset(data, labels, self.train_transform),
+                            batch_size=batch_size,
+                            shuffle=True)
+        return loader
+
     def get_test_loader(self, batch_size):
         data = self.test_set.data
         labels = self.test_set.targets

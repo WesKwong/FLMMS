@@ -12,7 +12,7 @@ class BaseModel(object):
         self.expt = expt
 
         # get neural network
-        self.net = get_nn(hp)
+        self.net = get_nn(hp).to(device)
 
         # parameters
         self.W = {name: value for name, value in self.net.named_parameters()}

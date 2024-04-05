@@ -3,14 +3,14 @@ import torch.nn.functional as F
 
 
 def get_net(dataset):
-    if dataset == 'MNIST':
+    if dataset == "MNIST":
         return LeNet5(10, 1)
-    elif dataset == 'FashionMNIST':
+    elif dataset == "FashionMNIST":
         return LeNet5(10, 1)
-    elif dataset == 'CIFAR10':
+    elif dataset == "CIFAR10":
         return LeNet5(10, 3)
     else:
-        raise ValueError('Invalid dataset')
+        raise ValueError(f"Invalid dataset getting LeNet5: {dataset}")
 
 
 class LeNet5(nn.Module):

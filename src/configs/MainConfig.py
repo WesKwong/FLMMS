@@ -1,7 +1,7 @@
 import itertools as it
 
 class Config(object):
-    # -------------------- global settings ------------------- #
+    # -------------------- global configs ------------------- #
     expt_name = None
     data_path = 'data/'
     results_path = 'results/'
@@ -12,7 +12,7 @@ class Config(object):
     cuda_device = [0, 1, 2, 3] # available when device is 'cuda',
                                # cuda_device=[0, 1, 2] means server uses GPU 0
                                # and client 1 uses GPU 1, client 2 uses GPU 2
-    # ------------------ experiment settings ----------------- #
+    # ------------------ experiment configs ----------------- #
     # name: name of the experiment
     # dataset: dataset
     # net: neural network
@@ -39,14 +39,14 @@ class Config(object):
     # --------------------------- - -------------------------- #
     def __init__(self):
         default = self.default
-        self.expt_settings = [default]
+        self.expt_groups = [default]
 
-    def get_expt_settings(self):
-        expt_settings = {}
-        for setting in self.expt_settings:
-            combinations = it.product(*(setting[name] for name in setting))
-            expt_setting = [{key : value[i] for i,key in enumerate(setting)}for value in combinations]
-            expt_settings[setting['name'][0]] = expt_setting
-        return expt_settings
+    def get_expt_groups_configs(self):
+        expt_groups_configs = {}
+        for expt_group in self.expt_groups:
+            combinations = it.product(*(expt_group[name] for name in expt_group))
+            expt_group_configs = [{key : value[i] for i,key in enumerate(expt_group)}for value in combinations]
+            expt_groups_configs[expt_group['name'][0]] = expt_group_configs
+        return expt_groups_configs
 
 config = Config()

@@ -6,6 +6,9 @@ import pickle
 
 import torch
 import torch.distributed as dist
+from concurrent.futures import ThreadPoolExecutor
+
+from configs.MainConfig import config
 
 def init_communication_group(verbose=True):
     logger.info("Initializing Communication Group...")
@@ -41,3 +44,15 @@ def recv(src, tag=0):
     serialized_data = bytes(data_tensor.tolist())
     data = pickle.loads(serialized_data)
     logger.debug(f'src={src}, recv {tag}: {data}')
+
+def broadcast(data, dsts, tag=0):
+    with ThreadPoolExecutor(max_workers=len(dsts)) as executor:
+        for dst in dsts:
+            executor.submit(send, data, dst, tag)
+
+def gather(srcs, tag=0):
+    with ThreadPoolExecutor(max_workers=len(srcs)) as executor:
+        data = []
+        for src in srcs:
+            data.append(executor.submit(recv, src, tag).result())
+    return data

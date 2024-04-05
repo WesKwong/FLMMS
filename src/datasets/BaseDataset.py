@@ -17,7 +17,7 @@ class BaseDataset(object):
     train_transform = None
     test_transform = None
     n_labels = None
-    clients_weight = dict()
+    client_weights = dict()
     splited_train_set = dict()
 
     def log_split(self, splited_data) -> str:
@@ -31,10 +31,10 @@ class BaseDataset(object):
             sum += split.sum()
         logger.info(f'sum = {sum}')
 
-    def get_clients_weight(self):
-        return self.clients_weight
+    def get_client_weights(self):
+        return self.client_weights
 
-    def get_split_train_loader(self, batch_size, client_id):
+    def get_splited_train_loader(self, batch_size, client_id):
         client_train_set = self.split_train_set[client_id]
         data = client_train_set[0]
         labels = client_train_set[1]
@@ -66,7 +66,7 @@ class BaseDataset(object):
         self.log_split(splited_train_set)
         for i, train_set in enumerate(splited_train_set):
             self.split_train_set[i+1] = train_set
-            self.clients_weight[i+1] = len(train_set[0])
+            self.client_weights[i+1] = len(train_set[0])
 
 
 class CustomerDataset(Dataset):

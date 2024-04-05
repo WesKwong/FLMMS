@@ -13,10 +13,10 @@ from models import BaseModel
 
 class BaseServerModel(BaseModel):
 
-    def __init__(self, hp, expt, test_loader, clients_weight):
+    def __init__(self, hp, expt, test_loader, client_weights):
         super().__init__(hp, expt)
         self.test_loader = test_loader
-        self.clients_weight = clients_weight
+        self.client_weights = client_weights
 
     def update_weight(self):
         tt.add(target=self.W, source=self.dW)
@@ -31,7 +31,7 @@ class BaseServerModel(BaseModel):
                 target=self.dW,
                 sources=[param["dW"] for param in clients_params],
                 weights=torch.stack([
-                    self.clients_weight[param["id"]] for param in clients_params
+                    self.client_weights[param["id"]] for param in clients_params
                 ]))
         else:
             raise ValueError(f"Invalid aggregation method: {aggregation}")

@@ -27,7 +27,7 @@ def load_results(path, filename, verbose=True):
     return results_dict
 
 
-def create_experiments(expt_groups_configs):
+def create_experiments(expt_groups_configs, verbose=True):
     log_id = 0
     expt_groups = dict()
     for name, expt_group_configs in expt_groups_configs.items():
@@ -36,6 +36,13 @@ def create_experiments(expt_groups_configs):
             expts.append(Experiment(hyperparameters=hp, log_id=log_id))
             log_id += 1
         expt_groups[name] = expts
+    if verbose:
+        logger.info(f"{len(expt_groups)} experiment groups created")
+        total_expts = 0
+        for name, expts in expt_groups.items():
+            logger.info(f"Group {name}: {len(expts)} experiments")
+            total_expts += len(expts)
+        logger.info(f"Total experiments: {total_expts}")
     return expt_groups
 
 
@@ -50,14 +57,10 @@ class Experiment():
         if log_id is None:
             self.hyperparameters['log_id'] = np.random.randint(100000)
 
-    def __str__(self):
-        selfname = "Hyperparameters: \n"
+    def log_hp(self):
+        logger.info("Hyperparameters:")
         for key, value in self.hyperparameters.items():
-            selfname += " - "+key+" "*(24-len(key))+str(value)+"\n"
-        return selfname
-
-    def __repr__(self):
-        return self.__str__()
+            logger.info(" - "+key+" "*(24-len(key))+str(value)+"\n")
 
     def log(self, update_dict, printout=True, override=False):
         # update result

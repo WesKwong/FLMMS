@@ -25,7 +25,7 @@ def destroy_communication_group():
 def is_server():
     return dist.get_rank() == 0
 
-def send(data, dst, tag=0):
+def send(data, dst: int, tag=0):
     serialized_data = pickle.dumps(data)
     data_tensor = torch.tensor(list(serialized_data), dtype=torch.uint8).to(torch.device('cpu'))
     data_size = torch.tensor(len(data_tensor), dtype=int).to(torch.device('cpu'))
@@ -34,7 +34,7 @@ def send(data, dst, tag=0):
     dist.send(data_tensor, dst=dst, tag=tag)
     logger.debug(f'dst={dst}, sent {tag}: {data}')
 
-def recv(src, tag=0):
+def recv(src: int, tag=0):
     data_size = torch.tensor(0, dtype=int).to(torch.device('cpu'))
     logger.debug(f'src={src}, receiving {tag}: ...')
     dist.recv(data_size, src=src, tag=tag)
@@ -44,19 +44,19 @@ def recv(src, tag=0):
     data = pickle.loads(serialized_data)
     logger.debug(f'src={src}, recv {tag}: {data}')
 
-def broadcast(data, dsts, tag=0):
+def broadcast(data, dsts: list, tag=0):
     with ThreadPoolExecutor(max_workers=len(dsts)) as executor:
         for dst in dsts:
             executor.submit(send, data, dst, tag)
 
-def gather(srcs, tag=0):
+def gather(srcs: list, tag=0):
     with ThreadPoolExecutor(max_workers=len(srcs)) as executor:
         data = []
         for src in srcs:
             data.append(executor.submit(recv, src, tag).result())
     return data
 
-def scatter(data, dsts, tag=0):
+def scatter(data, dsts: list, tag=0):
     with ThreadPoolExecutor(max_workers=len(dsts)) as executor:
         for i, dst in enumerate(dsts):
             executor.submit(send, data[i], dst, tag)

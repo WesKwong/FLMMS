@@ -44,7 +44,7 @@ def run_server(expt_group):
         weight = server.get_weight()
         comm.broadcast(weight, client_ids)
         start_time = time.time()
-        for round in range(hp["num_rounds"] + 1):
+        for round in range(1, hp["num_rounds"] + 1):
             log_time = time.time() - start_time
             # gather client weight updates
             clients_params = comm.gather(client_ids)

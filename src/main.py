@@ -1,15 +1,22 @@
 import tools.GlobVarManager as glob
 logger = glob.get('logger')
 # --------------------------- - -------------------------- #
-import torch
-
-from tools.ExptUtils import set_seed
-from tools.CudaTool import get_device
 from configs.MainConfig import config
-set_seed(config.random_seed)
+
+from tools.CudaTool import get_device
+device = get_device()
+
+import tools.CommTool as comm
+from models.Server.BaseServerRunner import run_server
+from models.Client.BaseClientRunner import run_client
+
 
 def main():
-    set_seed(config.random_seed)
-    logger.info(f"Running on {get_device()}")
-    tensor = torch.tensor([1, 2, 3]).to(get_device())
-    logger.info(f"Tensor: {tensor}")
+    logger.info("Experiment Running...")
+    comm.init_communication_group()
+    if comm.is_server():
+        run_server()
+    else:
+        run_client()
+    comm.destroy_communication_group()
+    logger.info("Experiment Done!")

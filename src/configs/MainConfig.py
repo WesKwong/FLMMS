@@ -7,7 +7,8 @@ class Config(object):
     results_path = 'results/'
     random_seed = 42
     log_level = 'INFO'
-    n_client = 3 # number of clients
+    num_client = 3 # number of clients
+    dataloader_workers = 4
     device = 'cpu' # 'cpu' or 'cuda'
     cuda_device = [0, 1, 2, 3] # available when device is 'cuda',
                                # cuda_device=[0, 1, 2] means server uses GPU 0
@@ -27,7 +28,7 @@ class Config(object):
     # --------------------------- - -------------------------- #
     default = {'name': ['main'],
                'dataset': ['CIFAR10'],
-               'net': ['CNN'],
+               'net': ['LeNet5'],
                'optimizer': ['Adam'],
                'scheduler': [['StepLR', {'step_size': 1, 'gamma': 0.5}]],
                'lr': [0.01],

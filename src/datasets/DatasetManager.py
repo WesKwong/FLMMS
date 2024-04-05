@@ -1,6 +1,6 @@
-def get_dataset(dataset_name):
-    if dataset_name == 'CIFAR10':
+def get_dataset(hp):
+    if hp["dataset"] == 'CIFAR10':
         from datasets.CIFAR10 import get_dataset
         return get_dataset()
     else:
-        raise ValueError(f"Invalid dataset: {dataset_name}")
+        raise ValueError(f"Invalid dataset: {hp["dataset"]}")

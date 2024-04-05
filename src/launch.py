@@ -11,7 +11,7 @@ RESULTS_PATH = get_unique_results_path(config.results_path, config.expt_name)
 
 MASTER_ADDR = "flmms_server"
 MASTER_PORT = "11451"
-WORLD_SIZE = config.n_client + 1
+WORLD_SIZE = config.num_client + 1
 DEVICE = config.device
 
 
@@ -55,7 +55,7 @@ def run_docker(id):
 @logger.catch
 def launch():
     run_docker(0)
-    for i in range(1, config.n_client+1):
+    for i in range(1, config.num_client+1):
         run_docker(i)
 
 

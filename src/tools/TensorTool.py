@@ -22,12 +22,12 @@ def scale(target, scaling):
         target[name].data = scaling * target[name].data.clone()
 
 
-def subtract(target, source):
+def sub(target, source):
     for name in target:
         target[name].data -= source[name].data.clone()
 
 
-def subtract_(target, minuend, subtrahend):
+def sub_(target, minuend, subtrahend):
     for name in target:
         target[name].data = minuend[name].data.clone(
         ) - subtrahend[name].data.clone()

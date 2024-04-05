@@ -2,15 +2,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-def get_net(dataset):
-    if dataset == "MNIST":
+def get_net(dataset_name):
+    if dataset_name == "MNIST":
         return LeNet5(10, 1)
-    elif dataset == "FashionMNIST":
+    elif dataset_name == "FashionMNIST":
         return LeNet5(10, 1)
-    elif dataset == "CIFAR10":
+    elif dataset_name == "CIFAR10":
         return LeNet5(10, 3)
     else:
-        raise ValueError(f"Invalid dataset getting LeNet5: {dataset}")
+        raise ValueError(f"Invalid dataset getting LeNet5: {dataset_name}")
 
 
 class LeNet5(nn.Module):

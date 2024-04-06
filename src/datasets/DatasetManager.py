@@ -1,4 +1,4 @@
-def get_dataset(hp: dict):
+def get_dataset(hp):
     dataset = hp["dataset"]
     if dataset == 'CIFAR10':
         from datasets.CIFAR10 import get_dataset

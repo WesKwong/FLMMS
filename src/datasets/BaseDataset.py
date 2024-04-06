@@ -7,6 +7,7 @@ import torch
 from torch.utils.data.dataset import Dataset
 from torch.utils.data.dataloader import DataLoader
 import numpy as np
+import copy
 
 from tools.DataTool import split_data
 
@@ -65,8 +66,10 @@ class BaseDataset(object):
                                             config.num_client, self.train_set)
         self.log_split(splited_train_set)
         for i, train_set in enumerate(splited_train_set):
-            self.splited_train_set[i+1] = train_set
+            self.splited_train_set[i+1] = (train_set[0], np.array(train_set[1]).reshape(-1, 1))
             self.client_weights[i+1] = len(train_set[0])
+        self.train_set.targets = np.array(self.train_set.targets).reshape(-1, 1)
+        self.test_set.targets = np.array(self.test_set.targets).reshape(-1, 1)
 
 
 class CustomerDataset(Dataset):

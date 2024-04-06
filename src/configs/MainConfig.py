@@ -13,7 +13,7 @@ class Config(object):
         "iid": True,
         "customize": True,
         "cus_distribution": [5,5,5]
-    },
+    }
     dataloader_workers = 4
     device = 'cpu' # 'cpu' or 'cuda'
     cuda_device = [0, 1, 2, 3] # available when device is 'cuda',

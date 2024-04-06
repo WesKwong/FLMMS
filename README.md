@@ -5,20 +5,22 @@ FLMMS is a Docker-based federated learning framework for simulating multi-machin
 
 ### Quick Start
 
-#### 1. Get Docker Image
+#### 1. Prepare Docker Environment
 
 ```bash
-cd SetupUtils && ./GetImage.bash
+cd setup_utils
 ```
 
-#### 2. Create a Docker Network
-
 ```bash
-cd SetupUtils && ./CreateDockerNet.bash
+./setup.bash
 ```
 
-#### 3. Launch the Simulator
+#### 2. Launch the Simulator
 
 ```bash
-cd src && python launch.py
+cd FLMMS
+```
+
+```bash
+python launch.py
 ```

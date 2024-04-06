@@ -4,4 +4,4 @@
 ./create_docker_net.bash
 
 # Pull the necessary images for the FLMMS containers
-./pull_images.bash
+./pull_image.bash

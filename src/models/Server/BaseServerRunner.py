@@ -25,12 +25,12 @@ def run_server(expt_group):
 
         # Load dataset
         dataset = get_dataset(hp)
-        train_loader = dataset.get_train_loader(hp['batch_size'])
-        test_loader = dataset.get_test_loader(hp['batch_size'])
+        train_loader = dataset.get_train_loader(hp['batchsize'])
+        test_loader = dataset.get_test_loader(hp['batchsize'])
 
         # scatter dataset to clients
         client_train_loaders = [
-            dataset.get_splited_train_loader(hp['batch_size'], client_id)
+            dataset.get_splited_train_loader(hp['batchsize'], client_id)
             for client_id in client_ids
         ]
         comm.scatter(client_train_loaders, client_ranks)

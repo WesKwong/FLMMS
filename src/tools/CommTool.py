@@ -23,7 +23,7 @@ def destroy_communication_group():
     logger.info("Destroyed Done!")
 
 def is_server():
-    return dist.get_rank() == 0
+    return dist.get_rank() == dist.get_world_size() - 1
 
 def send(data, dst: int, tag=0):
     serialized_data = pickle.dumps(data)

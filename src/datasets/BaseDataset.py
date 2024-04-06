@@ -4,8 +4,8 @@ logger = glob.get('logger')
 from configs.MainConfig import config
 
 import torch
-import torch.utils.data.dataset as Dataset
-import torch.utils.data.dataloader as DataLoader
+from torch.utils.data.dataset import Dataset
+from torch.utils.data.dataloader import DataLoader
 import numpy as np
 
 from tools.DataTool import split_data
@@ -35,7 +35,7 @@ class BaseDataset(object):
         return self.client_weights
 
     def get_splited_train_loader(self, batch_size, client_id):
-        client_train_set = self.split_train_set[client_id]
+        client_train_set = self.splited_train_set[client_id]
         data = client_train_set[0]
         labels = client_train_set[1]
         loader = DataLoader(CustomerDataset(data, labels,
@@ -62,10 +62,10 @@ class BaseDataset(object):
 
     def split_train_data(self):
         splited_train_set = split_data(config.data_distribution,
-                                            config.num_clients, self.train_set)
+                                            config.num_client, self.train_set)
         self.log_split(splited_train_set)
         for i, train_set in enumerate(splited_train_set):
-            self.split_train_set[i+1] = train_set
+            self.splited_train_set[i+1] = train_set
             self.client_weights[i+1] = len(train_set[0])
 
 

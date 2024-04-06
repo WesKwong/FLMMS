@@ -4,12 +4,8 @@ import numpy as np
 import torchvision
 import torchvision.transforms as transforms
 
-from datasets.BaseDataset import BaseDataset
-from configs.MainConfig import config
-
-
-def get_dataset():
-    return CIFAR10()
+from .basedataset import BaseDataset
+from configs.config import global_config as config
 
 
 class CIFAR10(BaseDataset):

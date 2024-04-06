@@ -1,15 +1,14 @@
-import tools.GlobVarManager as glob
+import tools.globvar as glob
 logger = glob.get('logger')
 # --------------------------- - -------------------------- #
-from configs.MainConfig import config
+from configs import global_config as config
 
 import torch
 from torch.utils.data.dataset import Dataset
 from torch.utils.data.dataloader import DataLoader
 import numpy as np
-import copy
 
-from tools.DataTool import split_data
+from .datatool import split_data
 
 
 class BaseDataset(object):

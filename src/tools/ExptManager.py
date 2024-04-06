@@ -63,7 +63,7 @@ class Experiment():
     def log_hp(self):
         logger.info("Hyperparameters:")
         for key, value in self.hyperparameters.items():
-            logger.info(" - "+key+" "*(24-len(key))+str(value)+"\n")
+            logger.info(" - "+key+" "*(24-len(key))+str(value))
 
     def log(self, update_dict, printout=True, override=False):
         # update result

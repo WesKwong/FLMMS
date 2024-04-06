@@ -1,14 +1,13 @@
-import tools.GlobVarManager as glob
+import tools.globvar as glob
 logger = glob.get('logger')
 # --------------------------- - -------------------------- #
 import torch
 
-import tools.TensorTool as tt
-from tools.CudaTool import get_device
-
+from tools.tensor_tool import *
+from tools.cuda_utils import get_device
 device = get_device()
 
-from models.BaseModel import BaseModel
+from ..basemodel import BaseModel
 
 
 class BaseServerModel(BaseModel):
@@ -21,15 +20,15 @@ class BaseServerModel(BaseModel):
         self.client_weights = torch.Tensor(client_weights_list).to(device)
 
     def update_weight(self):
-        tt.add(target=self.W, source=self.dW)
+        add(target=self.W, source=self.dW)
 
     def aggregate_weight_updates(self, clients_params, aggregation="mean"):
         # dW = aggregate(dW_i, i=1,..,n)
         if aggregation == "mean":
-            tt.mean(target=self.dW,
+            mean(target=self.dW,
                        sources=[param["dW"] for param in clients_params])
         elif aggregation == "weighted_mean":
-            tt.weighted_mean(
+            weighted_mean(
                 target=self.dW,
                 sources=[param["dW"] for param in clients_params],
                 weights=torch.stack([

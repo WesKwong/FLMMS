@@ -1,11 +1,10 @@
 import torch
 
-import tools.TensorTool as tt
-from tools.CudaTool import get_device
-
+from tools.tensor_tool import *
+from tools.cuda_utils import get_device
 device = get_device()
 
-from models.BaseModel import BaseModel
+from ..basemodel import BaseModel
 
 
 class BaseClientModel(BaseModel):
@@ -53,17 +52,17 @@ class BaseClientModel(BaseModel):
         self.scheduler = scheduler(self.optimizer, **self.hp['scheduler']['param'])
 
     def sync_model(self):
-        tt.add_(target=self.W, source1=self.old_W, source2=self.dW)
+        add_(target=self.W, source1=self.old_W, source2=self.dW)
 
     def compute_weight_update(self, iteration):
         # save old weights
-        tt.copy(target=self.old_W, source=self.W)
+        assign(target=self.old_W, source=self.W)
 
         # train
         self.train_loss = self.train(iteration)
 
         # get weight update
-        tt.sub_(target=self.dW, minuend=self.W, subtrahend=self.old_W)
+        sub_(target=self.dW, minuend=self.W, subtrahend=self.old_W)
 
     def train(self, iteration):
         train_loss = 0.0

@@ -29,11 +29,13 @@ def run_server(expt_group):
         test_loader = dataset.get_test_loader(hp['batchsize'])
 
         # scatter dataset to clients
+        logger.info("Scattering dataset to clients")
         client_train_loaders = [
             dataset.get_splited_train_loader(hp['batchsize'], client_id)
             for client_id in client_ids
         ]
         comm.scatter(client_train_loaders, client_ranks)
+        logger.info("Dataset scattered")
 
         # Init server model
         client_weights = dataset.get_client_weights()
@@ -43,8 +45,10 @@ def run_server(expt_group):
         logger.info("Start Distributed Training")
         log_data = dict()
         # init weight with clients
+        logger.info("Broadcasting initial weight to clients")
         weight = server.get_weight()
         comm.broadcast(weight, client_ranks)
+        logger.info("Initial weight broadcasted")
         start_time = time.time()
         for round in range(1, hp["num_rounds"] + 1):
             logger.info(f"Round {round}/{hp['num_rounds']}")

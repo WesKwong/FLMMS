@@ -1,7 +1,24 @@
 import torch
 
 
-def copy(target, source):
+def duplicate_zeros_like(source, device):
+    target = {
+        name: torch.zeros_like(source[name]).to(device)
+        for name in source
+    }
+    return target
+
+
+def duplicate(source, device):
+    target = {
+        name: torch.zeros_like(source[name]).to(device)
+        for name in source
+    }
+    assign(target, source)
+    return target
+
+
+def assign(target, source):
     for name in target:
         target[name].data = source[name].data.clone()
 

@@ -1,4 +1,4 @@
-import tools.GlobVarManager as glob
+import tools.globvar as glob
 logger = glob.get('logger')
 # --------------------------- - -------------------------- #
 import os
@@ -6,7 +6,6 @@ import pickle
 
 import torch
 import torch.distributed as dist
-from concurrent.futures import ThreadPoolExecutor
 
 
 def init_communication_group(verbose=True):
@@ -23,7 +22,7 @@ def destroy_communication_group():
     logger.info("Destroyed Done!")
 
 def is_server():
-    return dist.get_rank() == dist.get_world_size() - 1
+    return dist.get_rank() == 0
 
 def send(data, dst: int, tag=0):
     serialized_data = pickle.dumps(data)

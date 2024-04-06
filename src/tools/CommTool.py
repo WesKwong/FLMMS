@@ -43,6 +43,7 @@ def recv(src: int, tag=0):
     serialized_data = bytes(data_tensor.tolist())
     data = pickle.loads(serialized_data)
     logger.debug(f'src={src}, recv {tag}: {data}')
+    return data
 
 def broadcast(data, dsts: list, tag=0):
     with ThreadPoolExecutor(max_workers=len(dsts)) as executor:

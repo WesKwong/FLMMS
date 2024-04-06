@@ -1,16 +1,13 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-from nnets.BaseNetGetter import BaseNetGetter
 
-
-class LeNet5NetGetter(BaseNetGetter):
-
-    def __init__(self, hp):
-        if hp["dataset"] == "CIFAR10":
-            return LeNet5(10, 3)
-        else:
-            raise ValueError(f"Invalid dataset getting LeNet5: {hp["dataset"]}")
+def LeNet5NetGetter(hp):
+    dataset = hp["dataset"]
+    if dataset == "CIFAR10":
+        return LeNet5(10, 3)
+    else:
+        raise ValueError(f"Invalid dataset getting LeNet5: {dataset}")
 
 
 class LeNet5(nn.Module):

@@ -1,4 +1,5 @@
 import itertools as it
+from configs.ExptConfig import expt_groups
 
 class Config(object):
     # -------------------- global configs ------------------- #
@@ -8,39 +9,26 @@ class Config(object):
     random_seed = 42
     log_level = 'INFO'
     num_client = 3 # number of clients
+    data_distribution = {
+        "iid": True,
+        "customize": True,
+        "cus_distribution": [5,5,5]
+    },
     dataloader_workers = 4
     device = 'cpu' # 'cpu' or 'cuda'
     cuda_device = [0, 1, 2, 3] # available when device is 'cuda',
                                # cuda_device=[0, 1, 2] means server uses GPU 0
                                # and client 1 uses GPU 1, client 2 uses GPU 2
-    # ------------------ experiment configs ----------------- #
-    # name: name of the experiment
-    # dataset: dataset
-    # net: neural network
-    # optimizer: optimizer to be used
-    # scheduler: learning rate scheduler
-    # lr: learning rate
-    # min_lr: minimum learning rate
-    # iteration: number of iterations
-    # batchsize: batch size
-    # algo: algorithm
-    # log_freq: frequency of logging
-    # --------------------------- - -------------------------- #
-    default = {'name': ['main'],
-               'dataset': ['CIFAR10'],
-               'net': ['LeNet5'],
-               'optimizer': ['Adam'],
-               'scheduler': [['StepLR', {'step_size': 1, 'gamma': 0.5}]],
-               'lr': [0.01],
-               'min_lr': [0.0001],
-               'iteration': [100],
-               'batchsize': [64],
-               'algo': [['FedAvg', {'K': 5}]],
-               'log_freq': [10]}
     # --------------------------- - -------------------------- #
     def __init__(self):
-        default = self.default
-        self.expt_groups = [default]
+        self.check_is_global_valid()
+        self.expt_groups = expt_groups
+
+    def check_is_global_valid(self):
+        if self.num_client < 1:
+            raise ValueError("num_client should be greater than 0")
+        if self.num_client != len(self.data_distribution["cus_distribution"]):
+            raise ValueError("num_client should be equal to the length of cus_distribution")
 
     def get_expt_groups_configs(self):
         expt_groups_configs = {}

@@ -9,7 +9,7 @@ IMAGE_NAME = "weskwong/flmms:v1.0"
 MNT_PATH = "$(pwd)"
 RESULTS_PATH = get_unique_results_path(config.results_path, config.expt_name)
 
-MASTER_ADDR = "flmms_server"
+MASTER_ADDR = "flmms_client_1"
 MASTER_PORT = "11451"
 WORLD_SIZE = config.num_client + 1
 DEVICE = config.device
@@ -18,7 +18,7 @@ DEVICE = config.device
 def get_torchrun_cmd(id):
     nproc_per_node = f"--nproc_per_node=1"
     nnodes = f"--nnodes={WORLD_SIZE}"
-    node_rank = f"--node_rank={id}"
+    node_rank = f"--node_rank={id-1 if id != 0 else WORLD_SIZE-1}"
     master_addr = f"--master_addr={MASTER_ADDR}"
     master_port = f"--master_port={MASTER_PORT}"
     torchrun_cmd = f"torchrun {nproc_per_node} {nnodes} {node_rank} {master_addr} {master_port} run.py"
@@ -27,7 +27,7 @@ def get_torchrun_cmd(id):
 
 def run_docker(id):
     # docker command
-    docker_run_mode = "-d"
+    docker_run_mode = "-d" if id != 0 else "-it"
     network = f"--network={NETWORK_NAME}"
     mnt = f"-v {MNT_PATH}:/workspace"
     image = f"{IMAGE_NAME}"
@@ -54,9 +54,9 @@ def run_docker(id):
 
 @logger.catch
 def launch():
-    run_docker(0)
     for i in range(1, config.num_client+1):
         run_docker(i)
+    run_docker(0)
 
 
 if __name__ == "__main__":

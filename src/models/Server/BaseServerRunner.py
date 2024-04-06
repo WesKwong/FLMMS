@@ -21,6 +21,7 @@ def run_server(expt_group):
         expt.update_hp(hp)
         expt.log_hp()
         client_ids = range(1, hp['num_clients']+1)
+        client_ranks = range(0, hp['num_clients'])
 
         # Load dataset
         dataset = get_dataset(hp)
@@ -32,7 +33,7 @@ def run_server(expt_group):
             dataset.get_splited_train_loader(hp['batch_size'], client_id)
             for client_id in client_ids
         ]
-        comm.scatter(client_train_loaders, client_ids)
+        comm.scatter(client_train_loaders, client_ranks)
 
         # Init server model
         client_weights = dataset.get_client_weights()
@@ -43,23 +44,23 @@ def run_server(expt_group):
         log_data = dict()
         # init weight with clients
         weight = server.get_weight()
-        comm.broadcast(weight, client_ids)
+        comm.broadcast(weight, client_ranks)
         start_time = time.time()
         for round in range(1, hp["num_rounds"] + 1):
             log_time = time.time() - start_time
             # gather client weight updates
-            clients_params = comm.gather(client_ids)
+            clients_params = comm.gather(client_ranks)
             # aggregate weight updates
             server.aggregate_weight_updates(clients_params, hp['aggregation'])
             # update server weight
             server.update_weight()
             # broadcast aggregated weight updates to clients
             weight_update = server.get_weight_update()
-            comm.broadcast(weight_update, client_ids)
+            comm.broadcast(weight_update, client_ranks)
             # log
             if not expt.is_log_round(round):
                 continue
-            client_logs = comm.gather(client_ids)
+            client_logs = comm.gather(client_ranks)
             log_data[round]({
                 "weight": server.get_weight(),
                 "client_logs": client_logs,

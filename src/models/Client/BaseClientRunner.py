@@ -25,7 +25,7 @@ def run_client(expt_group):
         train_loader = comm.recv(server_rank)
 
         # Init client model
-        client = BaseClientModel(hp, expt, train_loader, int(os.environ["RANK"]))
+        client = BaseClientModel(hp, expt, train_loader, int(os.environ["RANK"])+1)
 
         # Start distributed training
         logger.info("Start Distributed Training")
@@ -36,7 +36,7 @@ def run_client(expt_group):
             # compute weight update
             client.compute_weight_update(hp["local_iters"])
             # send weight update to server
-            weight_update = client.get_weight_update()
+            weight_update = {"dW": client.get_weight_update(), "id": client.id}
             comm.send(weight_update, server_rank)
             # recv aggregated weight update from server
             weight_update = comm.recv(server_rank)

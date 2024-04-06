@@ -16,7 +16,9 @@ class BaseServerModel(BaseModel):
     def __init__(self, hp, expt, test_loader, client_weights):
         super().__init__(hp, expt)
         self.test_loader = test_loader
-        self.client_weights = client_weights
+        client_weights_list = [0]
+        client_weights_list.extend([client_weights[i] for i in range(1, len(client_weights)+1)])
+        self.client_weights = torch.Tensor(client_weights_list).to(device)
 
     def update_weight(self):
         tt.add(target=self.W, source=self.dW)

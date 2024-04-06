@@ -5,7 +5,7 @@ from tools.CudaTool import get_device
 
 device = get_device()
 
-from models import BaseModel
+from models.BaseModel import BaseModel
 
 
 class BaseClientModel(BaseModel):

@@ -33,7 +33,7 @@ def run_client(expt_group):
         client.set_weight(weight)
         for round in range(1, hp["num_rounds"] + 1):
             # compute weight update
-            client.compute_weight_update(hp["local_iter"])
+            client.compute_weight_update(hp["local_iters"])
             # send weight update to server
             weight_update = client.get_weight_update()
             comm.send(weight_update, server_id)

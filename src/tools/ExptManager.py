@@ -57,6 +57,9 @@ class Experiment():
         if log_id is None:
             self.hyperparameters['log_id'] = np.random.randint(100000)
 
+    def update_hp(self, hp):
+        self.hyperparameters.update(hp)
+
     def log_hp(self):
         logger.info("Hyperparameters:")
         for key, value in self.hyperparameters.items():
@@ -72,6 +75,10 @@ class Experiment():
 
         if printout:
             logger.info(update_dict)
+
+    def is_log_round(self, c_round):
+        log_freq = self.hyperparameters['log_freq']
+        return (c_round == 1) or (c_round % log_freq == 0) or (c_round == self.hyperparameters['iteration'])
 
     def to_dict(self):
         # turns an experiment into a dict that can be saved to disc

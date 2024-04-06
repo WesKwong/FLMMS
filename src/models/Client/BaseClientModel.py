@@ -49,8 +49,8 @@ class BaseClientModel(BaseModel):
         optimizer = getattr(torch.optim, self.hp['optim'])
         self.optimizer = optimizer(self.net.parameters(), lr=self.hp['lr'])
         # learning rate scheduler
-        scheduler = getattr(torch.optim.lr_scheduler, self.hp['scheduler'][0])
-        self.scheduler = scheduler(self.optimizer, **self.hp['scheduler'][1])
+        scheduler = getattr(torch.optim.lr_scheduler, self.hp['scheduler']['name'])
+        self.scheduler = scheduler(self.optimizer, **self.hp['scheduler']['param'])
 
     def sync_model(self):
         tt.add_(target=self.W, source1=self.W_old, source2=self.dW)

@@ -24,10 +24,10 @@ class BaseServerModel(BaseModel):
     def aggregate_weight_updates(self, clients_params, aggregation="mean"):
         # dW = aggregate(dW_i, i=1,..,n)
         if aggregation == "mean":
-            tt.average(target=self.dW,
+            tt.mean(target=self.dW,
                        sources=[param["dW"] for param in clients_params])
         elif aggregation == "weighted_mean":
-            tt.weighted_average(
+            tt.weighted_mean(
                 target=self.dW,
                 sources=[param["dW"] for param in clients_params],
                 weights=torch.stack([

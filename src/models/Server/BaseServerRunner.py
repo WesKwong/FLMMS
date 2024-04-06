@@ -7,17 +7,18 @@ import time
 import torch
 
 from tools.CudaTool import get_device
-device = get_device()
-
 import tools.CommTool as comm
 from datasets.DatasetManager import get_dataset
-
 from models.Server.BaseServerModel import BaseServerModel
+from configs.ParamPreprocessor import hp_preprocess
+
+device = get_device()
 
 def run_server(expt_group):
     for expt_cnt, expt in enumerate(expt_group):
         logger.info(f"Running ({expt_cnt+1}/{len(expt_group)}) experiment")
-        hp = expt.hyperparameters
+        hp = hp_preprocess(expt.hyperparameters)
+        expt.update_hp(hp)
         expt.log_hp()
         client_ids = range(1, hp['num_clients']+1)
 
@@ -56,6 +57,8 @@ def run_server(expt_group):
             weight_update = server.get_weight_update()
             comm.broadcast(weight_update, client_ids)
             # log
+            if not expt.is_log_round(round):
+                continue
             client_logs = comm.gather(client_ids)
             log_data[round]({
                 "weight": server.get_weight(),
@@ -65,6 +68,8 @@ def run_server(expt_group):
 
         # Evaluate
         for round in range(hp["num_rounds"] + 1):
+            if not expt.is_log_round(round):
+                continue
             data = log_data[round]
             server.set_weight(data["weight"])
             results_trainset_eval = server.evaluate(loader=train_loader, max_samples=5000, verbose=False)

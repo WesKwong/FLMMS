@@ -10,7 +10,6 @@ from tools.CudaTool import get_device
 device = get_device()
 
 import tools.CommTool as comm
-from datasets.DatasetManager import get_dataset
 
 from models.Client.BaseClientModel import BaseClientModel
 

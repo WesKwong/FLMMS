@@ -46,7 +46,7 @@ class BaseClientModel(BaseModel):
 
     def get_optim(self):
         # optimizer
-        optimizer = getattr(torch.optim, self.hp['optim'])
+        optimizer = getattr(torch.optim, self.hp['optimizer'])
         self.optimizer = optimizer(self.net.parameters(), lr=self.hp['lr'])
         # learning rate scheduler
         scheduler = getattr(torch.optim.lr_scheduler, self.hp['scheduler']['name'])

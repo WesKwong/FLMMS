@@ -27,7 +27,7 @@ def get_torchrun_cmd(id):
 
 def run_docker(id):
     # docker command
-    docker_run_mode = "-d" if id != 0 else "-it"
+    docker_run_mode = "-d"
     network = f"--network={NETWORK_NAME}"
     mnt = f"-v {MNT_PATH}:/workspace"
     image = f"{IMAGE_NAME}"

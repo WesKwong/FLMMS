@@ -46,18 +46,15 @@ def recv(src: int, tag=0):
     return data
 
 def broadcast(data, dsts: list, tag=0):
-    with ThreadPoolExecutor(max_workers=len(dsts)) as executor:
-        for dst in dsts:
-            executor.submit(send, data, dst, tag)
+    for dst in dsts:
+        send(data, dst, tag)
 
 def gather(srcs: list, tag=0):
-    with ThreadPoolExecutor(max_workers=len(srcs)) as executor:
-        data = []
-        for src in srcs:
-            data.append(executor.submit(recv, src, tag).result())
+    data = []
+    for src in srcs:
+        data.append(recv(src, tag))
     return data
 
 def scatter(data, dsts: list, tag=0):
-    with ThreadPoolExecutor(max_workers=len(dsts)) as executor:
-        for i, dst in enumerate(dsts):
-            executor.submit(send, data[i], dst, tag)
+    for i, dst in enumerate(dsts):
+        send(data[i], dst, tag)

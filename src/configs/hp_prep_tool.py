@@ -3,7 +3,7 @@ from .config import *
 def get_algo_hp(algo):
     name = algo["name"]
     param = algo["param"]
-    if name == "none":
+    if name == "None":
         return {
             "aggregation": "mean",
             "local_iters": 1

@@ -15,11 +15,11 @@ expt_groups = [{
     "name": ["main"],
     "dataset": ["CIFAR10"],
     "net": ["LeNet5"],
-    "iteration": [100],
+    "iteration": [10],
     "algo": [{
         "name": "FedAvg",
         "param": {
-            "K": 5
+            "K": 1
         }
     }],
     "log_freq": [10],

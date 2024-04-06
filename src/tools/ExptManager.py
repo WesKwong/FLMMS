@@ -5,15 +5,16 @@ import os
 import numpy as np
 
 def save_results(results_dict, path, name, verbose=True):
+    save_path = os.path.join(path, name)
     results_numpy = np.array(results_dict)
 
     if not os.path.exists(path):
         os.makedirs(path)
 
-    np.savez(path+name, results=results_numpy)
+    np.savez(save_path, results=results_numpy)
 
     if verbose:
-        logger.info(f"Saved results to {path+name+'.npz'}")
+        logger.info(f"Saved results to {save_path+'.npz'}")
 
 
 def load_results(path, filename, verbose=True):

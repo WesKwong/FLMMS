@@ -74,6 +74,7 @@ def run_server(expt_group):
                 continue
             data = log_data[round]
             server.set_weight(data["weight"])
+            logger.info(f"Evaluating...")
             results_trainset_eval = server.evaluate(loader=train_loader, max_samples=5000, verbose=False)
             results_testset_eval = server.evaluate(loader=test_loader, max_samples=10000, verbose=False)
             # log clients
@@ -84,16 +85,16 @@ def run_server(expt_group):
             client_iters = [log["iteration"] for log in client_logs]
             expt.log({
                 f"client{i}_train_loss": loss for i, loss in enumerate(client_train_losses)
-            }, printout=False)
+            }, printout=True)
             expt.log({
                 f"client{i}_lr": lr for i, lr in enumerate(client_lrs)
-            }, printout=False)
+            }, printout=True)
             expt.log({
                 f"client{i}_epoch": epoch for i, epoch in enumerate(client_epochs)
-            }, printout=False)
+            }, printout=True)
             expt.log({
                 f"client{i}_iteration": iteration for i, iteration in enumerate(client_iters)
-            }, printout=False)
+            }, printout=True)
             # log server
             expt.log({
                 "comm_round": round
@@ -106,7 +107,7 @@ def run_server(expt_group):
                 "test_" + key: value
                 for key, value in results_testset_eval.items()
             })
-            expt.log({"time": log_time - start_time})
+            expt.log({"time": log_data[round]["log_time"]})
             expt.save_to_disc(results_path)
         del server, dataset, train_loader, test_loader, client_train_loaders
         if device == torch.device("cuda"):

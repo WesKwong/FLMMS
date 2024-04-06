@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 import torchvision
 import torchvision.transforms as transforms
@@ -28,6 +29,8 @@ class CIFAR10(BaseDataset):
             transform=transforms.ToTensor())
         train_set.data = train_set.data.transpose((0, 3, 1, 2))
         test_set.data = test_set.data.transpose((0, 3, 1, 2))
+        train_set.targets = np.array(train_set.targets)
+        test_set.targets = np.array(test_set.targets)
         self.train_set = train_set
         self.test_set = test_set
         self.n_labels = 10

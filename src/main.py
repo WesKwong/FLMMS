@@ -1,21 +1,22 @@
-import tools.GlobVarManager as glob
+import tools.globvar as glob
 logger = glob.get('logger')
 # --------------------------- - -------------------------- #
-from configs.MainConfig import config
+from configs.config import expt_group_config_manager
 
-from tools.CudaTool import get_device
+from tools.cuda_utils import get_device
 device = get_device()
 
-import tools.CommTool as comm
-from tools.ExptManager import create_experiments
+import tools.communicator as comm
+from tools.expt_manager import create_experiments
+from nodes.runner import *
 
 
 def run_node(expt_group):
     if comm.is_server():
-        from models.Server.BaseServerRunner import run_server
+        run_server = get_server_runner(expt_group[0].hyperparameters)
         run_server(expt_group)
     else:
-        from models.Client.BaseClientRunner import run_client
+        run_client = get_client_runner(expt_group[0].hyperparameters)
         run_client(expt_group)
 
 
@@ -23,7 +24,7 @@ def main():
     logger.info(f"Experiment Running on {device}...")
     comm.init_communication_group()
 
-    expt_groups_configs = config.get_expt_groups_configs()
+    expt_groups_configs = expt_group_config_manager.get_expt_groups_configs()
     expt_groups = create_experiments(expt_groups_configs)
     for i, (name, expt_group) in enumerate(expt_groups.items()):
         logger.info(f"Running ({i+1}/{len(expt_groups)}) group: {name}")

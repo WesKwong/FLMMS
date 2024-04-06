@@ -1,4 +1,4 @@
-import FLMMS.src.tools.globvar as glob
+import tools.globvar as glob
 logger = glob.get('logger')
 # ------------------------------------------------------ #
 import os

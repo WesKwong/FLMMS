@@ -2,7 +2,7 @@ from .client import *
 from .server import *
 
 def get_client_model(hp):
-    algo = hp["algo"]
+    algo = hp["algo"]["name"]
     if algo == "None":
         return BaseClientModel
     elif algo == "FedAvg":
@@ -11,7 +11,7 @@ def get_client_model(hp):
         raise ValueError(f"Invalid algorithm: {algo}")
 
 def get_server_model(hp):
-    algo = hp["algo"]
+    algo = hp["algo"]["name"]
     if algo == "None":
         return BaseServerModel
     elif algo == "FedAvg":

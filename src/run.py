@@ -1,17 +1,17 @@
 # ------------- init global variables manager ------------ #
-import tools.GlobVarManager as glob
+import tools.globvar as glob
 glob._init()
 # ---------------------- init config --------------------- #
-from configs.MainConfig import config
+from configs import global_config
 # ------------------ init logger handler ----------------- #
 import sys
 from loguru import logger
 logger.remove()
-logger.add(sys.stdout, level=config.log_level)
+logger.add(sys.stdout, level=global_config.log_level)
 glob.set('logger', logger)
 # -------------------- set random seed ------------------- #
-from tools.ExptUtils import set_seed
-set_seed(config.random_seed)
+from tools.expt_utils import set_seed
+set_seed(global_config.random_seed)
 # ------------------------- run main ------------------------- #
 import os
 RESULTS_PATH = os.environ['RESULTS_PATH']

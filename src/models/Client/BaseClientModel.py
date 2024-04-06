@@ -74,7 +74,6 @@ class BaseClientModel(BaseModel):
             if data is None:
                 self.epoch += 1
                 self.schedule_flag = True
-                self.validate()
                 self.iter_train_loader = iter(self.train_loader)
                 data, label = next(self.iter_train_loader)
 

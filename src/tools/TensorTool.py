@@ -33,14 +33,14 @@ def sub_(target, minuend, subtrahend):
         ) - subtrahend[name].data.clone()
 
 
-def average(target, sources):
+def mean(target, sources):
     for name in target:
         target[name].data = torch.mean(torch.stack(
             [source[name].data for source in sources]),
                                        dim=0).clone()
 
 
-def weighted_average(target, sources, weights):
+def weighted_mean(target, sources, weights):
     for name in target:
         summ = torch.sum(weights)
         n = len(sources)

@@ -53,7 +53,7 @@ class BaseClientModel(BaseModel):
         self.scheduler = scheduler(self.optimizer, **self.hp['scheduler']['param'])
 
     def sync_model(self):
-        tt.add_(target=self.W, source1=self.W_old, source2=self.dW)
+        tt.add_(target=self.W, source1=self.old_W, source2=self.dW)
 
     def compute_weight_update(self, iteration):
         # save old weights

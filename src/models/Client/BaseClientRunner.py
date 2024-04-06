@@ -18,10 +18,10 @@ def run_client(expt_group):
         logger.info(f"Running ({expt_cnt+1}/{len(expt_group)}) experiment")
         hp = expt.hyperparameters
         expt.log_hp()
-        server_id = 0
+        server_rank = int(os.environ["WORLD_SIZE"])-1
 
         # Receive dataset from server
-        train_loader = comm.recv(server_id)
+        train_loader = comm.recv(server_rank)
 
         # Init client model
         client = BaseClientModel(hp, expt, train_loader, int(os.environ["RANK"]))
@@ -29,16 +29,16 @@ def run_client(expt_group):
         # Start distributed training
         logger.info("Start Distributed Training")
         # init weight with server
-        weight = comm.recv(server_id)
+        weight = comm.recv(server_rank)
         client.set_weight(weight)
         for round in range(1, hp["num_rounds"] + 1):
             # compute weight update
             client.compute_weight_update(hp["local_iters"])
             # send weight update to server
             weight_update = client.get_weight_update()
-            comm.send(weight_update, server_id)
+            comm.send(weight_update, server_rank)
             # recv aggregated weight update from server
-            weight_update = comm.recv(server_id)
+            weight_update = comm.recv(server_rank)
             client.set_weight_update(weight_update)
             # sync model
             client.sync_model()
@@ -49,7 +49,7 @@ def run_client(expt_group):
                 "train_loss": client.train_loss,
                 "lr": client.current_lr,
             }
-            comm.send(client_log, server_id)
+            comm.send(client_log, server_rank)
 
         del client, train_loader
         if device == torch.device("cuda"):

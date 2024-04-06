@@ -47,4 +47,4 @@ class CIFAR10(BaseDataset):
                                  (0.2023, 0.1994, 0.2010))
         ])
         # split train data
-        self.split_train_data(config.num_clients, config.data_distribution)
+        self.split_train_data()

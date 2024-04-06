@@ -47,6 +47,7 @@ def run_server(expt_group):
         comm.broadcast(weight, client_ranks)
         start_time = time.time()
         for round in range(1, hp["num_rounds"] + 1):
+            logger.info(f"Round {round}/{hp['num_rounds']}")
             log_time = time.time() - start_time
             # gather client weight updates
             clients_params = comm.gather(client_ranks)
@@ -61,14 +62,14 @@ def run_server(expt_group):
             if not expt.is_log_round(round):
                 continue
             client_logs = comm.gather(client_ranks)
-            log_data[round]({
+            log_data[round] = ({
                 "weight": server.get_weight(),
                 "client_logs": client_logs,
                 "log_time": log_time
             })
 
         # Evaluate
-        for round in range(hp["num_rounds"] + 1):
+        for round in range(1, hp["num_rounds"] + 1):
             if not expt.is_log_round(round):
                 continue
             data = log_data[round]

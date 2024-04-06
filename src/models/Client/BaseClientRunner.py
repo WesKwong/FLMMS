@@ -44,6 +44,8 @@ def run_client(expt_group):
             # sync model
             client.sync_model()
             # log
+            if not expt.is_log_round(round):
+                continue
             client_log = {
                 "epoch": client.epoch,
                 "iteration": client.iteration,

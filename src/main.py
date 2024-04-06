@@ -7,15 +7,15 @@ from tools.CudaTool import get_device
 device = get_device()
 
 import tools.CommTool as comm
-from models.Server.BaseServerRunner import run_server
-from models.Client.BaseClientRunner import run_client
 from tools.ExptManager import create_experiments
 
 
 def run_node(expt_group):
     if comm.is_server():
+        from models.Server.BaseServerRunner import run_server
         run_server(expt_group)
     else:
+        from models.Client.BaseClientRunner import run_client
         run_client(expt_group)
 
 

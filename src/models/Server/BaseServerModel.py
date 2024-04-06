@@ -39,7 +39,7 @@ class BaseServerModel(BaseModel):
             raise ValueError(f"Invalid aggregation method: {aggregation}")
 
     def evaluate(self, loader=None, max_samples=None, verbose=True):
-        self.model.eval()
+        self.net.eval()
         correct = 0
         total = 0
         eval_loss = 0.0
@@ -47,7 +47,7 @@ class BaseServerModel(BaseModel):
         if loader is None:
             loader = self.test_loader
         with torch.no_grad():
-            for data in self.testloader:
+            for data in loader:
                 inputs, labels = data
                 inputs, labels = inputs.to(device), labels.to(device)
                 outputs = self.net(inputs)

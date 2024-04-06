@@ -20,8 +20,8 @@ def run_server(expt_group):
         hp = hp_preprocess(expt.hyperparameters)
         expt.update_hp(hp)
         expt.log_hp()
-        client_ids = range(1, hp['num_clients']+1)
-        client_ranks = range(0, hp['num_clients'])
+        client_ids = range(1, hp['num_client']+1)
+        client_ranks = range(0, hp['num_client'])
 
         # Load dataset
         dataset = get_dataset(hp)

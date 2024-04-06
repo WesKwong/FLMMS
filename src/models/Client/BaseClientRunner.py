@@ -7,16 +7,17 @@ import os
 import torch
 
 from tools.CudaTool import get_device
-device = get_device()
-
 import tools.CommTool as comm
-
 from models.Client.BaseClientModel import BaseClientModel
+from configs.ParamPreprocessor import hp_preprocess
+
+device = get_device()
 
 def run_client(expt_group):
     for expt_cnt, expt in enumerate(expt_group):
         logger.info(f"Running ({expt_cnt+1}/{len(expt_group)}) experiment")
-        hp = expt.hyperparameters
+        hp = hp_preprocess(expt.hyperparameters)
+        expt.update_hp(hp)
         expt.log_hp()
         server_rank = int(os.environ["WORLD_SIZE"])-1
 

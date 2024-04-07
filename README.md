@@ -1,6 +1,30 @@
 # FLMMS: Federated Learning Multi-Machine Simulator
 FLMMS is a Docker-based federated learning framework for simulating multi-machine training.
 
+## Requirements
+
+Conda is recommended for managing the Python environment. The authors' environment is set up as follows:
+
+### 1. Create a conda environment and activate it
+
+```bash
+conda create -n flmms python=3.9 -y
+```
+
+### 2. Install the required packages
+
+#### about torch
+
+```bash
+conda install pytorch==1.12.0 torchvision==0.13.0 torchaudio==0.12.0 cudatoolkit=11.3 -c pytorch -y
+```
+
+#### about other packages
+
+```bash
+conda install numpy tqdm loguru -y
+```
+
 ## Usage
 
 ### Quick Start

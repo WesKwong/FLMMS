@@ -15,9 +15,10 @@ MASTER_PORT = "11451"
 WORLD_SIZE = global_config.num_client + 1
 DEVICE = global_config.device
 
-def monitor_server_log(is_monitor=global_config.monitor_server_log):
-    log_file = os.path.join(RESULTS_PATH, "server.log")
-    os.system(f"tail -f {log_file}")
+def monitor_server_log(is_monitor=True):
+    if is_monitor:
+        log_file = os.path.join(RESULTS_PATH, "server.log")
+        os.system(f"tail -f {log_file}")
 
 
 def get_torchrun_cmd(id):
@@ -62,7 +63,7 @@ def launch():
     run_docker(0)
     for i in range(1, global_config.num_client + 1):
         run_docker(i)
-    monitor_server_log()
+    monitor_server_log(global_config.monitor_server_log)
 
 
 if __name__ == "__main__":

@@ -51,8 +51,10 @@ class GlobalConfig(object):
     expt_name = None
     data_path = 'data/'
     results_path = 'results/'
-    log_level = 'INFO'
     random_seed = 42
+    # ------------------------ log ----------------------- #
+    monitor_server_log = True
+    log_level = 'INFO'
     # ---------------------- device ---------------------- #
     dataloader_workers = 4
     device = 'cpu'

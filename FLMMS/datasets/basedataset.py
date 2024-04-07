@@ -27,7 +27,7 @@ class BaseDataset(object):
             split = np.sum(client[1].reshape(1, -1) == np.arange(self.n_labels).reshape(
                 -1, 1),
                         axis=1)
-            logger.info(" - Client {}: {}, sum = {}".format(i, split, split.sum()))
+            logger.info(" - Client {}: {}, sum = {}".format(i+1, split, split.sum()))
             sum += split.sum()
         logger.info(f'sum = {sum}')
 

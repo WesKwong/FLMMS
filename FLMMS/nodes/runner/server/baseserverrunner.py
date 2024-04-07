@@ -88,16 +88,16 @@ def run_server(expt_group):
             client_epochs = [log["epoch"] for log in client_logs]
             client_iters = [log["iteration"] for log in client_logs]
             expt.log({
-                f"client{i}_train_loss": loss for i, loss in enumerate(client_train_losses)
+                f"client_{i+1}_train_loss": loss for i, loss in enumerate(client_train_losses)
             }, printout=True)
             expt.log({
-                f"client{i}_lr": lr for i, lr in enumerate(client_lrs)
+                f"client_{i+1}_lr": lr for i, lr in enumerate(client_lrs)
             }, printout=True)
             expt.log({
-                f"client{i}_epoch": epoch for i, epoch in enumerate(client_epochs)
+                f"client_{i+1}_epoch": epoch for i, epoch in enumerate(client_epochs)
             }, printout=True)
             expt.log({
-                f"client{i}_iteration": iteration for i, iteration in enumerate(client_iters)
+                f"client_{i+1}_iteration": iteration for i, iteration in enumerate(client_iters)
             }, printout=True)
             # log server
             expt.log({

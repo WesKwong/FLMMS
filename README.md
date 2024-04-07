@@ -62,7 +62,7 @@ In the `GlobalConfig` class, you can specify:
 - `dataloader_workers`: The number of workers for the dataloader. Default is `4`.
 - `device`: The device to use. You can specify `cuda` or `cpu`. Default is `cpu`.
 - `cuda_device`: available when `device` is `cuda`. Default is [0, 1, 2, 3], which means server uses GPU 0 and client 1 uses GPU 1, client 2 uses GPU 2, client 3 uses GPU 3.
-- `num_clients`: The number of clients. Default is `3`. As the server is also a node, the total number of nodes is `num_clients + 1`.
+- `num_client`: The number of clients. Default is `3`. As the server is also a node, the total number of nodes is `num_client + 1`.
 - `data_distribution`: The distribution of the dataset. See code in [`FLMMS/datasets/datatool.py`](FLMMS/datasets/datatool.py) for details.
 
 #### 2. Model configurations

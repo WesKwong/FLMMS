@@ -1,16 +1,18 @@
+from loguru import logger
 import tools.globvar as glob
-logger = glob.get('logger')
+
 results_path = glob.get('results_path')
-# --------------------------- - -------------------------- #
+# -------------------------------------------------------- #
 import time
 
 import torch
 
-from tools.cuda_utils import get_device
-import tools.communicator as comm
 import datasets
+import tools.communicator as comm
+from tools.cuda_utils import get_device
 from nodes.models import get_server_model
 from configs.hp_prep_tool import hp_preprocess
+from configs.config import global_config as config
 
 device = get_device()
 
@@ -20,24 +22,17 @@ def run_server(expt_group):
         hp = hp_preprocess(expt.hyperparameters)
         expt.update_hp(hp)
         expt.log_hp()
+        self_id = 0
         client_ids = range(1, hp['num_client']+1)
 
         # Load dataset
-        dataset = getattr(datasets, hp['dataset'])()
-        train_loader = dataset.get_train_loader(hp['batchsize'])
+        dataset = getattr(datasets, hp['dataset'])(config.data_path, self_id)
+        train_loader = dataset.get_train_loader(self_id, hp['batchsize'])
         test_loader = dataset.get_test_loader(hp['batchsize'])
-
-        # scatter dataset to clients
-        logger.info("Scattering dataset to clients")
-        client_train_loaders = [
-            dataset.get_splited_train_loader(hp['batchsize'], client_id)
-            for client_id in client_ids
-        ]
-        comm.scatter(client_train_loaders, client_ids)
-        logger.info("Dataset scattered")
+        client_weights = dataset.get_client_weights()
+        del dataset
 
         # Init server model
-        client_weights = dataset.get_client_weights()
         model_obj = get_server_model(hp)
         server = model_obj(hp, expt, test_loader, client_weights)
 
@@ -88,16 +83,16 @@ def run_server(expt_group):
             client_epochs = [log["epoch"] for log in client_logs]
             client_iters = [log["iteration"] for log in client_logs]
             expt.log({
-                f"client{i}_train_loss": loss for i, loss in enumerate(client_train_losses)
+                f"client_{i+1}_train_loss": loss for i, loss in enumerate(client_train_losses)
             }, printout=True)
             expt.log({
-                f"client{i}_lr": lr for i, lr in enumerate(client_lrs)
+                f"client_{i+1}_lr": lr for i, lr in enumerate(client_lrs)
             }, printout=True)
             expt.log({
-                f"client{i}_epoch": epoch for i, epoch in enumerate(client_epochs)
+                f"client_{i+1}_epoch": epoch for i, epoch in enumerate(client_epochs)
             }, printout=True)
             expt.log({
-                f"client{i}_iteration": iteration for i, iteration in enumerate(client_iters)
+                f"client_{i+1}_iteration": iteration for i, iteration in enumerate(client_iters)
             }, printout=True)
             # log server
             expt.log({
@@ -113,6 +108,6 @@ def run_server(expt_group):
             })
             expt.log({"time": log_data[round]["log_time"]})
             expt.save_to_disc(results_path)
-        del server, dataset, train_loader, test_loader, client_train_loaders
+        del server, train_loader, test_loader
         if device == torch.device("cuda"):
             torch.cuda.empty_cache()

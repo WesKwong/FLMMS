@@ -1,5 +1,4 @@
-import tools.globvar as glob
-logger = glob.get('logger')
+from loguru import logger
 # ------------------------------------------------------ #
 import os
 import numpy as np

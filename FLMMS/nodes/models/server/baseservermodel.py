@@ -1,6 +1,4 @@
-import tools.globvar as glob
-logger = glob.get('logger')
-# --------------------------- - -------------------------- #
+from loguru import logger
 import torch
 
 from tools.tensor_tool import *

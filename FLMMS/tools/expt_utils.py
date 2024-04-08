@@ -3,6 +3,7 @@ import time
 import random
 import numpy as np
 import torch
+import datasets
 
 def get_time_str():
     time_str = time.strftime("%Y%m%d%H%M%S")
@@ -32,3 +33,16 @@ def get_unique_results_path(path, expt_name=None):
     if not os.path.exists(unique_results_path):
         os.makedirs(unique_results_path)
     return unique_results_path
+
+def get_expt_dataset_config_set(expt_groups_configs):
+    expt_dataset_config_set = set()
+    for group_name, expt_group_configs in expt_groups_configs.items():
+        for expt_group_config in expt_group_configs:
+            dataset = expt_group_config['dataset']
+            expt_dataset_config_set.add(dataset)
+    return expt_dataset_config_set
+
+def prepare_datasets(path, num_client, data_distribution, expt_groups_configs):
+    expt_dataset_config_set = get_expt_dataset_config_set(expt_groups_configs)
+    for dataset in expt_dataset_config_set:
+        getattr(datasets, dataset + "Splitter")(path, num_client, data_distribution)

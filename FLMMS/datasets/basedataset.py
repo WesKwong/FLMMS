@@ -1,53 +1,72 @@
-import tools.globvar as glob
-logger = glob.get('logger')
-# --------------------------- - -------------------------- #
-from configs import global_config as config
+from loguru import logger
+
+import os
 
 import torch
 from torch.utils.data.dataset import Dataset
 from torch.utils.data.dataloader import DataLoader
 import numpy as np
 
-from .datatool import split_data
-
 
 class BaseDataset(object):
+    name = None
+    n_labels = None
     train_set = None
     test_set = None
     train_transform = None
     test_transform = None
-    n_labels = None
+    split_train_set = dict()
     client_weights = dict()
-    splited_train_set = dict()
+
+    def __init__(self, path, id) -> None:
+        split_data_path = os.path.join(path, self.name, "split")
+        # server data
+        if id == 0:
+            self.load_server_data(split_data_path)
+        # client data
+        else:
+            self.load_client_data(split_data_path, id)
+        self.load_data_transform()
+
+    def load_server_data(self, path):
+        data_dict = torch.load(os.path.join(path, "server_data.pt"))
+        self.train_set = data_dict["train_set"]
+        self.test_set = data_dict["test_set"]
+        split_train_set = data_dict["split_train_set"]
+        self.split_train_set = split_train_set
+        for id, train_set in split_train_set.items():
+            self.client_weights[id] = len(train_set[0])
+        self.log_split(split_train_set)
+
+    def load_client_data(self, path, client_id):
+        data_dict = torch.load(
+            os.path.join(path, f"client_{client_id}_data.pt"))
+        self.train_set = data_dict["train_set"]
 
     def log_split(self, splited_data) -> str:
         sum = 0
         logger.info("Data split:")
-        for i, client in enumerate(splited_data):
-            split = np.sum(client[1].reshape(1, -1) == np.arange(self.n_labels).reshape(
-                -1, 1),
-                        axis=1)
-            logger.info(" - Client {}: {}, sum = {}".format(i, split, split.sum()))
+        for id, client in splited_data.items():
+            split = np.sum(client[1].reshape(1, -1) == np.arange(
+                self.n_labels).reshape(-1, 1),
+                           axis=1)
+            logger.info(" - Client {}: {}, sum = {}".format(
+                id, split, split.sum()))
             sum += split.sum()
         logger.info(f'sum = {sum}')
 
-    def get_client_weights(self):
-        return self.client_weights
+    def load_data_transform(self):
+        raise NotImplementedError
 
-    def get_splited_train_loader(self, batch_size, client_id):
-        client_train_set = self.splited_train_set[client_id]
-        data = client_train_set[0]
-        labels = client_train_set[1]
+    def get_train_loader(self, id, batch_size):
+        if id == 0:
+            data = self.train_set.data
+            labels = self.train_set.targets
+        else:
+            data = self.train_set[0]
+            labels = self.train_set[1]
         loader = DataLoader(CustomerDataset(data, labels,
                                             self.train_transform),
-                            batch_size=batch_size,
-                            shuffle=True)
-        return loader
-
-    def get_train_loader(self, batch_size):
-        data = self.train_set.data
-        labels = self.train_set.targets
-        loader = DataLoader(CustomerDataset(data, labels, self.train_transform),
                             batch_size=batch_size,
                             shuffle=True)
         return loader
@@ -60,13 +79,18 @@ class BaseDataset(object):
                             shuffle=False)
         return loader
 
-    def split_train_data(self):
-        splited_train_set = split_data(config.data_distribution,
-                                            config.num_client, self.train_set)
-        self.log_split(splited_train_set)
-        for i, train_set in enumerate(splited_train_set):
-            self.splited_train_set[i+1] = (train_set[0], train_set[1])
-            self.client_weights[i+1] = len(train_set[0])
+    def get_split_train_loader(self, batch_size, client_id):
+        client_train_set = self.split_train_set[client_id]
+        data = client_train_set[0]
+        labels = client_train_set[1]
+        loader = DataLoader(CustomerDataset(data, labels,
+                                            self.train_transform),
+                            batch_size=batch_size,
+                            shuffle=True)
+        return loader
+
+    def get_client_weights(self):
+        return self.client_weights
 
 
 class CustomerDataset(Dataset):

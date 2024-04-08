@@ -1,17 +1,21 @@
+from loguru import logger
 import tools.globvar as glob
-logger = glob.get('logger')
+
 results_path = glob.get('results_path')
-# --------------------------- - -------------------------- #
+# -------------------------------------------------------- #
 import os
 
 import torch
 
-from tools.cuda_utils import get_device
+import datasets
 import tools.communicator as comm
+from tools.cuda_utils import get_device
 from nodes.models import get_client_model
 from configs.hp_prep_tool import hp_preprocess
+from configs.config import global_config as config
 
 device = get_device()
+
 
 def run_client(expt_group):
     for expt_cnt, expt in enumerate(expt_group):
@@ -22,8 +26,10 @@ def run_client(expt_group):
         server_id = 0
         self_id = int(os.environ["RANK"])
 
-        # Receive dataset from server
-        train_loader = comm.recv(server_id)
+        # Load dataset
+        dataset = getattr(datasets, hp["dataset"])(config.data_path, self_id)
+        train_loader = dataset.get_train_loader(self_id, hp["batchsize"])
+        del dataset
 
         # Init client model
         model_obj = get_client_model(hp)

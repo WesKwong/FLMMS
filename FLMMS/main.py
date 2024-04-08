@@ -1,6 +1,4 @@
-import tools.globvar as glob
-logger = glob.get('logger')
-# --------------------------- - -------------------------- #
+from loguru import logger
 from configs.config import expt_group_config_manager
 
 from tools.cuda_utils import get_device

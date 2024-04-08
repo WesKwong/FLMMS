@@ -64,6 +64,7 @@ In the `GlobalConfig` class, you can specify:
 - `cuda_device`: available when `device` is `cuda`. Default is [0, 1, 2, 3], which means server uses GPU 0 and client 1 uses GPU 1, client 2 uses GPU 2, client 3 uses GPU 3.
 - `num_client`: The number of clients. Default is `3`. As the server is also a node, the total number of nodes is `num_client + 1`.
 - `data_distribution`: The distribution of the dataset. See code in [`FLMMS/datasets/datatool.py`](FLMMS/datasets/datatool.py) for details.
+- `enable_prepare_dataset`: Whether or not to prepare the dataset. Default is `True`. A recommended way is set it to `True` when you change the `num_client` or `data_distribution`, and set it to `False` in next experiments used the same `num_client` and `data_distribution`.
 
 #### 2. Model configurations
 
@@ -88,12 +89,12 @@ algo = [{"name": "None", "param": {}}, {"name": "FedAvg", "param": {"K": 5}}]
 
 The simulator will run the experiment for 6 times, with the following configurations:
 
-- iteration=100, algo=None
-- iteration=100, algo=FedAvg
-- iteration=1000, algo=None
-- iteration=1000, algo=FedAvg
-- iteration=10000, algo=None
-- iteration=10000, algo=FedAvg
+- `iteration=100, algo=None`
+- `iteration=100, algo=FedAvg`
+- `iteration=1000, algo=None`
+- `iteration=1000, algo=FedAvg`
+- `iteration=10000, algo=None`
+- `iteration=10000, algo=FedAvg`
 
 There are 2 default classes `ExptGroupConfig1` and `ExptGroupConfig2` in the `config.py` file. You can define your own experiment configurations.
 

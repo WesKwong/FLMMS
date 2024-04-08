@@ -70,9 +70,11 @@ def run_docker(id):
 def launch():
     logger.info(f"Launching FLMMS")
     logger.info(f"Results will be saved at {RESULTS_PATH}")
-    logger.info(f"Preparing Datasets")
-    prepare_datasets(config.data_path, config.num_client,
-                     config.data_distribution, egcm.get_expt_groups_configs())
+    if config.enable_prepare_dataset:
+        logger.info(f"Preparing Datasets")
+        prepare_datasets(config.data_path, config.num_client,
+                         config.data_distribution,
+                         egcm.get_expt_groups_configs())
     logger.info(f"Launching Server")
     run_docker(0)
     for i in range(1, config.num_client + 1):

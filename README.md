@@ -102,9 +102,11 @@ You can specify the following parameters:
 
 - `group_name`: The name of the experiment group.
 - `dataset`: The dataset to use. Choose from `MNIST`, `FashionMNIST`, `CIFAR10`.
-- `net`: The neural network model to use.
+- `net`: The neural network model to use. Choose from `LeNet5`, `AlexNet`.
 - `iteration`: The number of iterations.
-- `algo`: The federated learning algorithm to use.
+- `algo`: The federated learning algorithm to use. Choose from:
+    - `{"name": "None", "param": {}}`
+    - `{"name": "FedAvg", "param": {"K": 5}}`
 - `log_freq`: The frequency of logging.
 
 ## Acknowledgments

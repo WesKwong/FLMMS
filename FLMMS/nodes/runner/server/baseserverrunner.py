@@ -10,7 +10,7 @@ import torch
 import datasets
 import tools.communicator as comm
 from tools.cuda_utils import get_device
-from tools.expt_utils import get_progress_str
+from tools.expt_utils import log_progress
 from nodes.models import get_server_model
 from configs.hp_prep_tool import hp_preprocess
 from configs.config import global_config as config
@@ -21,13 +21,14 @@ device = get_device()
 def run_server(expt_group):
     for expt_cnt, expt in enumerate(expt_group):
         logger.info(f"Running ({expt_cnt+1}/{len(expt_group)}) experiment")
+        # -------------- Prepare Environment ------------- #
         hp = hp_preprocess(expt.hyperparameters)
         expt.update_hp(hp)
         expt.log_hp()
         self_id = 0
         client_ids = range(1, hp['num_client'] + 1)
 
-        # Load dataset
+        # ----------------- Load dataset ----------------- #
         dataset = getattr(datasets, hp['dataset'])(config.data_path, hp['net'],
                                                    self_id)
         train_loader = dataset.get_train_loader(self_id, hp['batchsize'])
@@ -35,18 +36,21 @@ def run_server(expt_group):
         client_weights = dataset.get_client_weights()
         del dataset
 
-        # Init server model
+        # --------------- Init server model -------------- #
         model_obj = get_server_model(hp)
         server = model_obj(hp, expt, test_loader, client_weights)
 
-        # Start distributed training
+        # ================================================ #
+        #            Start Distributed Training            #
+        # ================================================ #
         logger.info("Start Distributed Training")
         log_data = dict()
-        # init weight with clients
+        # ----------- init weight with clients ----------- #
         logger.info("Broadcasting initial weight to clients")
         weight = server.get_weight()
         comm.broadcast(weight, client_ids)
-        logger.info("Initial weight broadcasted")
+        # --------------------- Train -------------------- #
+        logger.info("Training...")
         start_time = time.time()
         for round in range(1, hp["num_rounds"] + 1):
             # gather client weight updates
@@ -60,7 +64,7 @@ def run_server(expt_group):
             comm.broadcast(weight_update, client_ids)
             # -------------------------------------------- #
             log_time = time.time() - start_time
-            logger.info(get_progress_str(start_time, round, hp["num_rounds"]))
+            log_progress(start_time, round, hp["num_rounds"])
             # log
             if not expt.is_log_round(round):
                 continue
@@ -71,7 +75,9 @@ def run_server(expt_group):
                 "log_time": log_time
             })
 
-        # Evaluate
+        # ================================================ #
+        #                     Evaluate                     #
+        # ================================================ #
         for round in range(1, hp["num_rounds"] + 1):
             if not expt.is_log_round(round):
                 continue

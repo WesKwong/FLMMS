@@ -57,7 +57,7 @@ def prepare_datasets(path, num_client, data_distribution, expt_groups_configs):
                                                 data_distribution)
 
 
-def get_progress_str(start_time, current_round, total_rounds):
+def log_progress(start_time, current_round, total_rounds):
     elapsed_t = time.time() - start_time
     remaining_rounds = total_rounds - current_round
     avg_round_time = elapsed_t / current_round
@@ -70,10 +70,15 @@ def get_progress_str(start_time, current_round, total_rounds):
                                                  (remain_t % 3600 // 60),
                                                  remain_t % 60)
     progress_percentage = current_round / total_rounds * 100
-    progress_percentage_str = "{:>6.2f}%".format(progress_percentage)
+    progress_percentage_str = "{:_>7.3f}%".format(progress_percentage)
     total_round_str_len = len(str(total_rounds))
-    current_round_str = "{:>{}}".format(current_round, total_round_str_len)
-    progress_str = f"Round:[{current_round_str}/{total_rounds}] " \
-                     f"[{elapsed_t_str}->{remain_t_str}] " \
-                     f"[{progress_percentage_str}]"
-    return progress_str
+    current_round_str = "{:_>{}}".format(current_round, total_round_str_len)
+    progress_str = f"[{current_round_str}/{total_rounds}] " \
+                   f"[{elapsed_t_str}->{remain_t_str}] " \
+                   f"[{progress_percentage_str}]"
+    if current_round == 1:
+        header_str = f"{'Round':*^{int(2*total_round_str_len)+3}} " \
+                     f"**Elapse*->*Remain** " \
+                     f"*Progress*"
+        logger.info(header_str)
+    logger.info(progress_str)

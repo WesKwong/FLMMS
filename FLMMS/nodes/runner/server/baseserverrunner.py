@@ -10,6 +10,7 @@ import torch
 import datasets
 import tools.communicator as comm
 from tools.cuda_utils import get_device
+from tools.expt_utils import get_progress_str
 from nodes.models import get_server_model
 from configs.hp_prep_tool import hp_preprocess
 from configs.config import global_config as config
@@ -48,8 +49,6 @@ def run_server(expt_group):
         logger.info("Initial weight broadcasted")
         start_time = time.time()
         for round in range(1, hp["num_rounds"] + 1):
-            logger.info(f"Round {round}/{hp['num_rounds']}")
-            log_time = time.time() - start_time
             # gather client weight updates
             clients_params = comm.gather(client_ids)
             # aggregate weight updates
@@ -59,6 +58,9 @@ def run_server(expt_group):
             # broadcast aggregated weight updates to clients
             weight_update = server.get_weight_update()
             comm.broadcast(weight_update, client_ids)
+            # -------------------------------------------- #
+            log_time = time.time() - start_time
+            logger.info(get_progress_str(start_time, round, hp["num_rounds"]))
             # log
             if not expt.is_log_round(round):
                 continue

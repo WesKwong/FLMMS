@@ -67,7 +67,8 @@ class GlobalConfig(object):
     # ---------------------- device ---------------------- #
     dataloader_workers = 4
     device = 'cpu'
-    cuda_device = [0, 1, 2, 3] # available when device is 'cuda'
+    cuda_device = [0, 1, 2, 3]
+    # available when device is 'cuda'
     # cuda_device=[0, 1, 2] means server uses GPU 0
     # and client 1 uses GPU 1, client 2 uses GPU 2
     # ------------------- client & data ------------------ #

@@ -2,6 +2,7 @@ from loguru import logger
 from configs.config import expt_group_config_manager
 
 from tools.cuda_utils import get_device
+
 device = get_device()
 
 import tools.communicator as comm
@@ -30,3 +31,5 @@ def main():
 
     comm.destroy_communication_group()
     logger.info("Experiment Done!")
+    if comm.is_server():
+        logger.info("Press <Ctrl-C> to exit monitoring.")

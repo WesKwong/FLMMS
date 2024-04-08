@@ -72,6 +72,7 @@ def launch():
     logger.info(f"Results will be saved at {RESULTS_PATH}")
     if config.enable_prepare_dataset:
         logger.info(f"Preparing Datasets")
+        logger.warning(f"If you don't need to re-prepare the dataset every time, you can set `enable_prepare_dataset` to `False` in the config file. See details in the README.md.")
         prepare_datasets(config.data_path, config.num_client,
                          config.data_distribution,
                          egcm.get_expt_groups_configs())

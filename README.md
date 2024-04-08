@@ -64,7 +64,7 @@ In the `GlobalConfig` class, you can specify:
 - `cuda_device`: available when `device` is `cuda`. Default is [0, 1, 2, 3], which means server uses GPU 0 and client 1 uses GPU 1, client 2 uses GPU 2, client 3 uses GPU 3.
 - `num_client`: The number of clients. Default is `3`. As the server is also a node, the total number of nodes is `num_client + 1`.
 - `data_distribution`: The distribution of the dataset. See code in [`FLMMS/datasets/datatool.py`](FLMMS/datasets/datatool.py) for details.
-- `enable_prepare_dataset`: Whether or not to prepare the dataset. Default is `True`. A recommended way is set it to `True` when you change the `num_client` or `data_distribution`, and set it to `False` in next experiments used the same `num_client` and `data_distribution`.
+- `enable_prepare_dataset`: Whether or not to prepare the dataset. Default is `True`. A recommended way is set it to `True` when you change the `num_client` or `data_distribution`, and set it to `False` if you use the same `num_client` and `data_distribution` in the next experiment.
 
 #### 2. Model configurations
 
@@ -101,7 +101,7 @@ There are 2 default classes `ExptGroupConfig1` and `ExptGroupConfig2` in the `co
 You can specify the following parameters:
 
 - `group_name`: The name of the experiment group.
-- `dataset`: The dataset to use.
+- `dataset`: The dataset to use. Choose from `MNIST`, `FashionMNIST`, `CIFAR10`.
 - `net`: The neural network model to use.
 - `iteration`: The number of iterations.
 - `algo`: The federated learning algorithm to use.

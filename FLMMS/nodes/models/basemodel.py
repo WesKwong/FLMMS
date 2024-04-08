@@ -3,15 +3,23 @@ import torch.nn as nn
 from tools.tensor_tool import *
 from neuralnets import get_nn
 from tools.cuda_utils import get_device
+
 device = get_device()
+
 
 def get_loss_fn(hp):
     if hp["dataset"] == "CIFAR10":
         return nn.CrossEntropyLoss()
+    elif hp["dataset"] == "MNIST":
+        return nn.CrossEntropyLoss()
+    elif hp["dataset"] == "FashionMNIST":
+        return nn.CrossEntropyLoss()
     else:
         raise ValueError(f"Invalid dataset: {hp['dataset']}")
 
+
 class BaseModel(object):
+
     def __init__(self, hp, expt) -> None:
         self.hp = hp
         self.expt = expt

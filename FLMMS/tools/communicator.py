@@ -18,7 +18,7 @@ def init_communication_group(verbose=True) -> None:
             f"Master Address: {os.environ['MASTER_ADDR']} | Master Port: {os.environ['MASTER_PORT']}"
         )
         logger.info(
-            f"Rank/WorldSize: {dist.get_rank()}/{dist.get_world_size()}")
+            f"Rank: {dist.get_rank()} | World Size: {dist.get_world_size()}")
 
 
 def destroy_communication_group() -> None:

@@ -20,8 +20,8 @@ def run_node(expt_group):
 
 
 def main():
-    logger.info(f"Experiment Running on {device}...")
     comm.init_communication_group()
+    logger.info(f"Experiment Running on {device}...")
 
     expt_groups_configs = expt_group_config_manager.get_expt_groups_configs()
     expt_groups = create_experiments(expt_groups_configs)
@@ -29,7 +29,7 @@ def main():
         logger.info(f"Running ({i+1}/{len(expt_groups)}) group: {name}")
         run_node(expt_group)
 
-    comm.destroy_communication_group()
     logger.info("Experiment Done!")
     if comm.is_server():
+        comm.destroy_communication_group()
         logger.info("Press <Ctrl-C> to exit monitoring.")

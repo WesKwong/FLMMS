@@ -18,8 +18,8 @@ class ExptGroupConfig1(object):
     dataset = ["MNIST"]
     net = ["LeNet5"]
     iteration = [500]
-    algo = [{"name": "FedAvg", "param": {"K": 1}}]
-    log_freq = [500]
+    algo = [{"name": "FedAvg", "param": {"K": 5}}]
+    log_freq = [100]
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
 

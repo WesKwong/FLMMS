@@ -16,6 +16,7 @@ from configs.config import global_config as config
 
 device = get_device()
 
+
 def run_server(expt_group):
     for expt_cnt, expt in enumerate(expt_group):
         logger.info(f"Running ({expt_cnt+1}/{len(expt_group)}) experiment")
@@ -23,10 +24,11 @@ def run_server(expt_group):
         expt.update_hp(hp)
         expt.log_hp()
         self_id = 0
-        client_ids = range(1, hp['num_client']+1)
+        client_ids = range(1, hp['num_client'] + 1)
 
         # Load dataset
-        dataset = getattr(datasets, hp['dataset'])(config.data_path, self_id)
+        dataset = getattr(datasets, hp['dataset'])(config.data_path, hp['net'],
+                                                   self_id)
         train_loader = dataset.get_train_loader(self_id, hp['batchsize'])
         test_loader = dataset.get_test_loader(hp['batchsize'])
         client_weights = dataset.get_client_weights()
@@ -74,30 +76,44 @@ def run_server(expt_group):
             data = log_data[round]
             server.set_weight(data["weight"])
             logger.info(f"Evaluating...")
-            results_trainset_eval = server.evaluate(loader=train_loader, max_samples=5000, verbose=False)
-            results_testset_eval = server.evaluate(loader=test_loader, max_samples=10000, verbose=False)
+            results_trainset_eval = server.evaluate(loader=train_loader,
+                                                    max_samples=5000,
+                                                    verbose=False)
+            results_testset_eval = server.evaluate(loader=test_loader,
+                                                   max_samples=10000,
+                                                   verbose=False)
             # log clients
             client_logs = data["client_logs"]
             client_train_losses = [log["train_loss"] for log in client_logs]
             client_lrs = [log["lr"] for log in client_logs]
             client_epochs = [log["epoch"] for log in client_logs]
             client_iters = [log["iteration"] for log in client_logs]
-            expt.log({
-                f"client_{i+1}_train_loss": loss for i, loss in enumerate(client_train_losses)
-            }, printout=True)
-            expt.log({
-                f"client_{i+1}_lr": lr for i, lr in enumerate(client_lrs)
-            }, printout=True)
-            expt.log({
-                f"client_{i+1}_epoch": epoch for i, epoch in enumerate(client_epochs)
-            }, printout=True)
-            expt.log({
-                f"client_{i+1}_iteration": iteration for i, iteration in enumerate(client_iters)
-            }, printout=True)
+            expt.log(
+                {
+                    f"client_{i+1}_train_loss": loss
+                    for i, loss in enumerate(client_train_losses)
+                },
+                printout=True)
+            expt.log(
+                {
+                    f"client_{i+1}_lr": lr
+                    for i, lr in enumerate(client_lrs)
+                },
+                printout=True)
+            expt.log(
+                {
+                    f"client_{i+1}_epoch": epoch
+                    for i, epoch in enumerate(client_epochs)
+                },
+                printout=True)
+            expt.log(
+                {
+                    f"client_{i+1}_iteration": iteration
+                    for i, iteration in enumerate(client_iters)
+                },
+                printout=True)
             # log server
-            expt.log({
-                "comm_round": round
-            })
+            expt.log({"comm_round": round})
             expt.log({
                 "train_" + key: value
                 for key, value in results_trainset_eval.items()

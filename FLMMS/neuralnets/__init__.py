@@ -1,4 +1,5 @@
 from .lenet5 import LeNet5
+from .alexnet import AlexNet
 
 
 def get_nn(hp):
@@ -11,6 +12,15 @@ def get_nn(hp):
             net = LeNet5(10, 1)
         elif dataset == "FashionMNIST":
             net = LeNet5(10, 1)
+        else:
+            raise ValueError(f"Invalid dataset: {dataset}")
+    elif net_name == "AlexNet":
+        if dataset == "CIFAR10":
+            net = AlexNet(10, 3)
+        elif dataset == "MNIST":
+            net = AlexNet(10, 1)
+        elif dataset == "FashionMNIST":
+            net = AlexNet(10, 1)
         else:
             raise ValueError(f"Invalid dataset: {dataset}")
     else:

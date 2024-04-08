@@ -9,24 +9,40 @@ from .datasetsplitter import DatasetSplitter
 
 class MNIST(BaseDataset):
 
-    def __init__(self, path, id) -> None:
+    def __init__(self, path, net, id) -> None:
         self.name = "MNIST"
         self.n_labels = 10
-        super().__init__(path, id)
+        super().__init__(path, net, id)
 
-    def load_data_transform(self):
-        self.train_transform = transforms.Compose([
-            transforms.ToPILImage(),
-            transforms.Resize((32, 32)),
-            transforms.ToTensor(),
-            transforms.Normalize((0.06078, ), (0.1957, ))
-        ])
-        self.test_transform = transforms.Compose([
-            transforms.ToPILImage(),
-            transforms.Resize((32, 32)),
-            transforms.ToTensor(),
-            transforms.Normalize((0.06078, ), (0.1957, ))
-        ])
+    def load_data_transform(self, net):
+        if net == "LeNet5":
+            self.train_transform = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((32, 32)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.06078, ), (0.1957, ))
+            ])
+            self.test_transform = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((32, 32)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.06078, ), (0.1957, ))
+            ])
+        elif net == "AlexNet":
+            self.train_transform = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.06078, ), (0.1957, ))
+            ])
+            self.test_transform = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.06078, ), (0.1957, ))
+            ])
+        else:
+            raise ValueError(f"Invalid net: {net}")
 
 
 class MNISTSplitter(DatasetSplitter):

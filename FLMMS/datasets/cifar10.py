@@ -9,26 +9,44 @@ from .datasetsplitter import DatasetSplitter
 
 class CIFAR10(BaseDataset):
 
-    def __init__(self, path, id) -> None:
+    def __init__(self, path, net, id) -> None:
         self.name = "CIFAR10"
         self.n_labels = 10
-        super().__init__(path, id)
+        super().__init__(path, net, id)
 
-    def load_data_transform(self):
-        self.train_transform = transforms.Compose([
-            transforms.ToPILImage(),
-            transforms.RandomCrop(32, padding=4),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465),
-                                 (0.2023, 0.1994, 0.2010))
-        ])
-        self.test_transform = transforms.Compose([
-            transforms.ToPILImage(),
-            transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465),
-                                 (0.2023, 0.1994, 0.2010))
-        ])
+    def load_data_transform(self, net):
+        if net == "LeNet5":
+            self.train_transform = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((32, 32)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.4914, 0.4822, 0.4465),
+                                     (0.2023, 0.1994, 0.2010))
+            ])
+            self.test_transform = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((32, 32)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.4914, 0.4822, 0.4465),
+                                     (0.2023, 0.1994, 0.2010))
+            ])
+        elif net == "AlexNet":
+            self.train_transform = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.4914, 0.4822, 0.4465),
+                                     (0.2023, 0.1994, 0.2010))
+            ])
+            self.test_transform = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize((0.4914, 0.4822, 0.4465),
+                                     (0.2023, 0.1994, 0.2010))
+            ])
+        else:
+            raise ValueError(f"Invalid net: {net}")
 
 
 class CIFAR10Splitter(DatasetSplitter):

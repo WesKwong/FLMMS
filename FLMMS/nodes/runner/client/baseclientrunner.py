@@ -27,7 +27,8 @@ def run_client(expt_group):
         self_id = int(os.environ["RANK"])
 
         # Load dataset
-        dataset = getattr(datasets, hp["dataset"])(config.data_path, self_id)
+        dataset = getattr(datasets, hp["dataset"])(config.data_path, hp['net'],
+                                                   self_id)
         train_loader = dataset.get_train_loader(self_id, hp["batchsize"])
         del dataset
 

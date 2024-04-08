@@ -15,7 +15,7 @@ def get_configs_dict(configs):
 # ======================================================== #
 class ExptGroupConfig1(object):
     group_name = ["main"]
-    dataset = ["CIFAR10"]
+    dataset = ["MNIST"]
     net = ["LeNet5"]
     iteration = [500]
     algo = [{"name": "FedAvg", "param": {"K": 1}}]
@@ -26,11 +26,11 @@ class ExptGroupConfig1(object):
 
 class ExptGroupConfig2(object):
     group_name = ["main"]
-    dataset = ["CIFAR10"]
+    dataset = ["FashionMNIST"]
     net = ["LeNet5"]
-    iteration = [100]
+    iteration = [500]
     algo = [{"name": "none", "param": {}}]
-    log_freq = [5]
+    log_freq = [500]
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
 

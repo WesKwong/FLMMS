@@ -15,22 +15,22 @@ def get_configs_dict(configs):
 # ======================================================== #
 class ExptGroupConfig1(object):
     group_name = ["main"]
-    dataset = ["CIFAR10"]
+    dataset = ["MNIST"]
     net = ["LeNet5"]
     iteration = [500]
-    algo = [{"name": "FedAvg", "param": {"K": 1}}]
-    log_freq = [500]
+    algo = [{"name": "FedAvg", "param": {"K": 5}}]
+    log_freq = [100]
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
 
 
 class ExptGroupConfig2(object):
     group_name = ["main"]
-    dataset = ["CIFAR10"]
+    dataset = ["FashionMNIST"]
     net = ["LeNet5"]
-    iteration = [100]
+    iteration = [500]
     algo = [{"name": "none", "param": {}}]
-    log_freq = [5]
+    log_freq = [500]
     # ---------------------------------------------------- #
     configs_dict = get_configs_dict(locals())
 
@@ -67,7 +67,8 @@ class GlobalConfig(object):
     # ---------------------- device ---------------------- #
     dataloader_workers = 4
     device = 'cpu'
-    cuda_device = [0, 1, 2, 3] # available when device is 'cuda'
+    cuda_device = [0, 1, 2, 3]
+    # available when device is 'cuda'
     # cuda_device=[0, 1, 2] means server uses GPU 0
     # and client 1 uses GPU 1, client 2 uses GPU 2
     # ------------------- client & data ------------------ #

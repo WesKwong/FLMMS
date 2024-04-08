@@ -18,7 +18,7 @@ class BaseDataset(object):
     split_train_set = dict()
     client_weights = dict()
 
-    def __init__(self, path, id) -> None:
+    def __init__(self, path, net, id) -> None:
         split_data_path = os.path.join(path, self.name, "split")
         # server data
         if id == 0:
@@ -26,7 +26,7 @@ class BaseDataset(object):
         # client data
         else:
             self.load_client_data(split_data_path, id)
-        self.load_data_transform()
+        self.load_data_transform(net)
 
     def load_server_data(self, path):
         data_dict = torch.load(os.path.join(path, "server_data.pt"))

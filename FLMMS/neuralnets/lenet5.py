@@ -2,14 +2,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-def LeNet5NetGetter(hp):
-    dataset = hp["dataset"]
-    if dataset == "CIFAR10":
-        return LeNet5(10, 3)
-    else:
-        raise ValueError(f"Invalid dataset getting LeNet5: {dataset}")
-
-
 class LeNet5(nn.Module):
 
     def __init__(self, n_classes, in_channels):

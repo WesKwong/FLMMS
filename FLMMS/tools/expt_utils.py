@@ -3,6 +3,8 @@ import time
 import random
 import numpy as np
 import torch
+from loguru import logger
+
 import datasets
 
 def get_time_str():
@@ -45,4 +47,5 @@ def get_expt_dataset_config_set(expt_groups_configs):
 def prepare_datasets(path, num_client, data_distribution, expt_groups_configs):
     expt_dataset_config_set = get_expt_dataset_config_set(expt_groups_configs)
     for dataset in expt_dataset_config_set:
+        logger.info(f"Preparing dataset: {dataset}")
         getattr(datasets, dataset + "Splitter")(path, num_client, data_distribution)

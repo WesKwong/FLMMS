@@ -7,10 +7,10 @@ from .basedataset import BaseDataset
 from .datasetsplitter import DatasetSplitter
 
 
-class CIFAR10(BaseDataset):
+class FashionMNIST(BaseDataset):
 
     def __init__(self, path, net, id) -> None:
-        self.name = "CIFAR10"
+        self.name = "FashionMNIST"
         self.n_labels = 10
         super().__init__(path, net, id)
 
@@ -20,54 +20,50 @@ class CIFAR10(BaseDataset):
                 transforms.ToPILImage(),
                 transforms.Resize((32, 32)),
                 transforms.ToTensor(),
-                transforms.Normalize((0.4914, 0.4822, 0.4465),
-                                     (0.2023, 0.1994, 0.2010))
+                transforms.Normalize((0.1307, ), (0.3081, ))
             ])
             self.test_transform = transforms.Compose([
                 transforms.ToPILImage(),
                 transforms.Resize((32, 32)),
                 transforms.ToTensor(),
-                transforms.Normalize((0.4914, 0.4822, 0.4465),
-                                     (0.2023, 0.1994, 0.2010))
+                transforms.Normalize((0.1307, ), (0.3081, ))
             ])
         elif net == "AlexNet":
             self.train_transform = transforms.Compose([
                 transforms.ToPILImage(),
                 transforms.Resize((224, 224)),
                 transforms.ToTensor(),
-                transforms.Normalize((0.4914, 0.4822, 0.4465),
-                                     (0.2023, 0.1994, 0.2010))
+                transforms.Normalize((0.1307, ), (0.3081, ))
             ])
             self.test_transform = transforms.Compose([
                 transforms.ToPILImage(),
                 transforms.Resize((224, 224)),
                 transforms.ToTensor(),
-                transforms.Normalize((0.4914, 0.4822, 0.4465),
-                                     (0.2023, 0.1994, 0.2010))
+                transforms.Normalize((0.1307, ), (0.3081, ))
             ])
         else:
             raise ValueError(f"Invalid net: {net}")
 
 
-class CIFAR10Splitter(DatasetSplitter):
+class FashionMNISTSplitter(DatasetSplitter):
 
     def __init__(self, path, num_client, data_distribution):
-        self.name = "CIFAR10"
+        self.name = "FashionMNIST"
         super().__init__(path, num_client, data_distribution)
 
     def load_raw_dataset(self, path):
-        train_set = torchvision.datasets.CIFAR10(
+        train_set = torchvision.datasets.FashionMNIST(
             root=path,
             train=True,
             download=True,
             transform=transforms.ToTensor())
-        test_set = torchvision.datasets.CIFAR10(
+        test_set = torchvision.datasets.FashionMNIST(
             root=path,
             train=False,
             download=True,
             transform=transforms.ToTensor())
-        train_set.data = train_set.data.transpose((0, 3, 1, 2))
-        test_set.data = test_set.data.transpose((0, 3, 1, 2))
+        train_set.data = train_set.data.numpy().reshape(-1, 1, 28, 28) / 255
+        test_set.data = test_set.data.numpy().reshape(-1, 1, 28, 28) / 255
         train_set.targets = np.array(train_set.targets)
         test_set.targets = np.array(test_set.targets)
         self.train_set = train_set

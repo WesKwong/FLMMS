@@ -57,7 +57,7 @@ def prepare_datasets(path, num_client, data_distribution, expt_groups_configs):
                                                 data_distribution)
 
 
-def log_progress(start_time, current_round, total_rounds):
+def log_progress_detail(start_time, current_round, total_rounds):
     elapsed_t = time.time() - start_time
     remaining_rounds = total_rounds - current_round
     avg_round_time = elapsed_t / current_round
@@ -76,9 +76,11 @@ def log_progress(start_time, current_round, total_rounds):
     progress_str = f"[{current_round_str}/{total_rounds}] " \
                    f"[{elapsed_t_str}->{remain_t_str}] " \
                    f"[{progress_percentage_str}]"
-    if current_round == 1:
-        header_str = f"{'Round':*^{int(2*total_round_str_len)+3}} " \
-                     f"**Elapse*->*Remain** " \
-                     f"*Progress*"
-        logger.info(header_str)
     logger.info(progress_str)
+
+def log_progress_header(total_rounds):
+    total_round_str_len = len(str(total_rounds))
+    header_str = f"{'Round':*^{int(2*total_round_str_len)+3}} " \
+                 f"**Elapse*->*Remain** " \
+                 f"*Progress*"
+    logger.info(header_str)

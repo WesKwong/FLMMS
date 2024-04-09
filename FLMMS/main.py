@@ -10,13 +10,13 @@ from tools.expt_manager import create_experiments
 from nodes.runner import *
 
 
-def run_node(expt_group):
+def run_node(expt):
     if comm.is_server():
-        run_server = get_server_runner(expt_group[0].hyperparameters)
-        run_server(expt_group)
+        run_server = get_server_runner(expt.hyperparameters)
+        run_server(expt)
     else:
-        run_client = get_client_runner(expt_group[0].hyperparameters)
-        run_client(expt_group)
+        run_client = get_client_runner(expt.hyperparameters)
+        run_client(expt)
 
 
 def main():
@@ -27,7 +27,9 @@ def main():
     expt_groups = create_experiments(expt_groups_configs)
     for i, (name, expt_group) in enumerate(expt_groups.items()):
         logger.info(f"Running ({i+1}/{len(expt_groups)}) group: {name}")
-        run_node(expt_group)
+        for expt_cnt, expt in enumerate(expt_group):
+            logger.info(f"Running ({expt_cnt+1}/{len(expt_group)}) experiment")
+            run_node(expt)
 
     logger.info("Experiment Done!")
     if comm.is_server():

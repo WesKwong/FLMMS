@@ -22,7 +22,7 @@ conda install pytorch==1.12.0 torchvision==0.13.0 torchaudio==0.12.0 cudatoolkit
 #### about other packages
 
 ```bash
-conda install numpy tqdm loguru -y
+conda install numpy tqdm loguru GPUtil -y
 ```
 
 ## Usage

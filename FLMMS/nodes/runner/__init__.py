@@ -4,9 +4,9 @@ from .client import *
 def get_server_runner(hp):
     algo = hp["algo"]["name"]
     if algo == "None":
-        run_func = base_run_server
+        run_func = BaseServerRunner
     elif algo == "FedAvg":
-        run_func = base_run_server
+        run_func = BaseServerRunner
     else:
         raise ValueError(f"Invalid algorithm: {algo}")
 
@@ -15,9 +15,9 @@ def get_server_runner(hp):
 def get_client_runner(hp):
     algo = hp["algo"]["name"]
     if algo == "None":
-        run_func = base_run_client
+        run_func = BaseClientRunner
     elif algo == "FedAvg":
-        run_func = base_run_client
+        run_func = BaseClientRunner
     else:
         raise ValueError(f"Invalid algorithm: {algo}")
 

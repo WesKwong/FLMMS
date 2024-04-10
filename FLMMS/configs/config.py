@@ -61,6 +61,7 @@ class GlobalConfig(object):
     data_path = 'data/'
     results_path = 'results/'
     random_seed = 42
+    async_comm = True
     # ------------------------ log ----------------------- #
     monitor_server_log = True
     log_level = 'INFO'

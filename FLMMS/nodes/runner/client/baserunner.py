@@ -27,7 +27,6 @@ class BaseRunner(object):
         self.load_dataset()
         self.init_client_model()
         self.distribute_training()
-        self.evaluate()
 
     def prepare_environment(self):
         self.hp = hp_preprocess(self.expt.hyperparameters)
